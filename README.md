@@ -822,29 +822,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Scikit-learn for ML capabilities
 - Bootstrap for UI components
 
----
-
-## 📞 Contact
-
-**Project Maintainer**: Your Name  
-**Email**: your.email@example.com  
-**GitHub**: [@yourusername](https://github.com/yourusername)  
-**Project Link**: [https://github.com/yourusername/HeartFL-v1.0](https://github.com/yourusername/HeartFL-v1.0)
-
----
-
-## 🚀 Future Enhancements
-
-- [ ] Add support for more ML algorithms (Random Forest, Neural Networks)
-- [ ] Implement differential privacy mechanisms
-- [ ] Add data encryption for model weights
-- [ ] Create REST API for external integrations
-- [ ] Add email notifications for FL round completion
-- [ ] Implement advanced visualization dashboards
-- [ ] Add export functionality for predictions (PDF reports)
-- [ ] Support for more medical datasets
-- [ ] Multi-language support
-- [ ] Mobile application
 
 ---
 
