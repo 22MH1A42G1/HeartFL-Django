@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Upload Dataset - HeartFL{% endblock %}
+{% block page_title %}Upload Dataset{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <i class="fas fa-upload me-2"></i>Upload Patient Dataset (CSV)
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>CSV Format Required:</strong> The CSV file must contain these columns:
+                    <code>age, sex, cp, trestbps, chol, fbs, restecg, thalach, exang, oldpeak, slope, ca, thal, target</code>
+                </div>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% if user.role == 'superadmin' and hospitals %}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Select Hospital</label>
+                        <select name="hospital_id" class="form-select">
+                            {% for h in hospitals %}
+                            <option value="{{ h.pk }}">{{ h.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% endif %}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">CSV File</label>
+                        {{ form.csv_file }}
+                        <div class="form-text">Upload a CSV file with heart disease patient data.</div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-upload me-1"></i>Upload Dataset
+                        </button>
+                        <a href="{% url 'hospitals:list' %}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

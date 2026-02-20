@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Start FL Round - HeartFL{% endblock %}
+{% block page_title %}Start New FL Round{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <i class="fas fa-play me-2"></i>Start New Federated Learning Round
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <h6 class="fw-bold"><i class="fas fa-info-circle me-2"></i>What happens in a FL Round?</h6>
+                    <ol class="mb-0">
+                        <li>Each hospital with a ready dataset trains a local logistic regression model</li>
+                        <li>Local model weights are sent to the server (no patient data is shared)</li>
+                        <li>Weights are aggregated using weighted averaging (FedAvg)</li>
+                        <li>A global model is created and stored</li>
+                        <li>Doctors can use this global model for predictions</li>
+                    </ol>
+                </div>
+                <form method="post">
+                    {% csrf_token %}
+                    <p class="text-muted">Click "Start Round" to begin the federated learning process across all hospitals with ready datasets.</p>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-danger btn-lg">
+                            <i class="fas fa-play me-2"></i>Start Round
+                        </button>
+                        <a href="{% url 'federation:rounds' %}" class="btn btn-outline-secondary btn-lg">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

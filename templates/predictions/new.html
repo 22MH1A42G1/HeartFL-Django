@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}New Prediction - HeartFL{% endblock %}
+{% block page_title %}New Patient Prediction{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <i class="fas fa-stethoscope me-2"></i>Patient Feature Input
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        {% for field in form %}
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                            <div class="text-danger small">{{ field.errors }}</div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="mt-4 d-flex gap-2">
+                        <button type="submit" class="btn btn-danger btn-lg">
+                            <i class="fas fa-brain me-2"></i>Predict Risk
+                        </button>
+                        <a href="{% url 'predictions:list' %}" class="btn btn-outline-secondary btn-lg">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <i class="fas fa-info-circle me-2"></i>Feature Guide
+            </div>
+            <div class="card-body small">
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2"><strong>Age:</strong> Patient's age in years</li>
+                    <li class="mb-2"><strong>Sex:</strong> 1=Male, 0=Female</li>
+                    <li class="mb-2"><strong>CP:</strong> Chest pain type (0-3)</li>
+                    <li class="mb-2"><strong>Trestbps:</strong> Resting blood pressure (mm Hg)</li>
+                    <li class="mb-2"><strong>Chol:</strong> Serum cholesterol (mg/dl)</li>
+                    <li class="mb-2"><strong>FBS:</strong> Fasting blood sugar &gt;120 mg/dl</li>
+                    <li class="mb-2"><strong>Restecg:</strong> Resting ECG results</li>
+                    <li class="mb-2"><strong>Thalach:</strong> Max heart rate achieved</li>
+                    <li class="mb-2"><strong>Exang:</strong> Exercise induced angina</li>
+                    <li class="mb-2"><strong>Oldpeak:</strong> ST depression</li>
+                    <li class="mb-2"><strong>Slope:</strong> ST segment slope</li>
+                    <li class="mb-2"><strong>CA:</strong> Major vessels (0-3)</li>
+                    <li><strong>Thal:</strong> Thalassemia type</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

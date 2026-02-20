@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block title %}Round {{ round.round_number }} - HeartFL{% endblock %}
+{% block page_title %}FL Round {{ round.round_number }}{% endblock %}
+{% block content %}
+<div class="mb-4">
+    <a href="{% url 'federation:rounds' %}" class="btn btn-outline-secondary btn-sm">
+        <i class="fas fa-arrow-left me-1"></i>Back to Rounds
+    </a>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <i class="fas fa-info-circle me-2"></i>Round Info
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-6">Round</dt>
+                    <dd class="col-sm-6">#{{ round.round_number }}</dd>
+                    <dt class="col-sm-6">Status</dt>
+                    <dd class="col-sm-6">
+                        <span class="badge {% if round.status == 'completed' %}bg-success{% elif round.status == 'failed' %}bg-danger{% else %}bg-warning text-dark{% endif %}">
+                            {{ round.status|title }}
+                        </span>
+                    </dd>
+                    <dt class="col-sm-6">Participants</dt>
+                    <dd class="col-sm-6">{{ round.participants_count }}</dd>
+                    <dt class="col-sm-6">Started</dt>
+                    <dd class="col-sm-6">{{ round.started_at|date:"M d, Y H:i" }}</dd>
+                    <dt class="col-sm-6">Completed</dt>
+                    <dd class="col-sm-6">{{ round.completed_at|date:"M d, Y H:i"|default:"-" }}</dd>
+                </dl>
+            </div>
+        </div>
+
+        {% if global_model %}
+        <div class="card mt-4">
+            <div class="card-header bg-success text-white">
+                <i class="fas fa-globe me-2"></i>Global Model
+            </div>
+            <div class="card-body text-center">
+                <div class="display-4 fw-bold text-success">{{ global_model.global_accuracy_percent }}%</div>
+                <div class="text-muted">Global Accuracy</div>
+                <hr>
+                <small class="text-muted">Created: {{ global_model.created_at|date:"M d, Y H:i" }}</small>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <i class="fas fa-hospital me-2"></i>Hospital Models
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Hospital</th>
+                            <th>Local Accuracy</th>
+                            <th>Trained At</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for hm in hospital_models %}
+                        <tr>
+                            <td><i class="fas fa-hospital me-2 text-danger"></i>{{ hm.hospital.name }}</td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="progress flex-grow-1" style="height: 8px;">
+                                        <div class="progress-bar bg-success" style="width: {{ hm.local_accuracy_percent }}%"></div>
+                                    </div>
+                                    <span class="fw-bold text-success">{{ hm.local_accuracy_percent }}%</span>
+                                </div>
+                            </td>
+                            <td>{{ hm.trained_at|date:"H:i:s" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="3" class="text-center text-muted">No hospital models</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

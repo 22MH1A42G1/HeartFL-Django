@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% block title %}Prediction Result - HeartFL{% endblock %}
+{% block page_title %}Prediction Result{% endblock %}
+{% block content %}
+<div class="mb-3">
+    <a href="{% url 'predictions:list' %}" class="btn btn-outline-secondary btn-sm">
+        <i class="fas fa-arrow-left me-1"></i>Back to Predictions
+    </a>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body py-5">
+                <div class="mb-3">
+                    {% if prediction.prediction == 1 %}
+                    <i class="fas fa-heartbeat text-danger" style="font-size: 4rem;"></i>
+                    {% else %}
+                    <i class="fas fa-heart text-success" style="font-size: 4rem;"></i>
+                    {% endif %}
+                </div>
+                <h2 class="fw-bold {% if prediction.prediction == 1 %}text-danger{% else %}text-success{% endif %}">
+                    {% if prediction.prediction == 1 %}Heart Disease Risk{% else %}Low Risk{% endif %}
+                </h2>
+                <div class="display-3 fw-bold mt-3 {% if prediction.risk_label == 'High' %}text-danger{% elif prediction.risk_label == 'Medium' %}text-warning{% else %}text-success{% endif %}">
+                    {{ prediction.risk_percentage }}%
+                </div>
+                <div class="text-muted">Risk Score</div>
+                <div class="mt-3">
+                    <span class="badge fs-6 {% if prediction.risk_label == 'High' %}bg-danger{% elif prediction.risk_label == 'Medium' %}bg-warning text-dark{% else %}bg-success{% endif %}">
+                        {{ prediction.risk_label }} Risk
+                    </span>
+                </div>
+                <div class="progress mt-3" style="height: 12px;">
+                    <div class="progress-bar {% if prediction.risk_label == 'High' %}bg-danger{% elif prediction.risk_label == 'Medium' %}bg-warning{% else %}bg-success{% endif %}" 
+                         style="width: {{ prediction.risk_percentage }}%"></div>
+                </div>
+            </div>
+        </div>
+        <div class="card mt-3">
+            <div class="card-body">
+                <p class="mb-1"><strong>Doctor:</strong> {{ prediction.doctor.username }}</p>
+                <p class="mb-0"><strong>Date:</strong> {{ prediction.created_at|date:"M d, Y H:i" }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <i class="fas fa-list me-2"></i>Patient Features
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="p-3 bg-light rounded">
+                            <div class="text-muted small">Age</div>
+                            <div class="fw-bold fs-5">{{ prediction.age|floatformat:0 }} years</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 bg-light rounded">
+                            <div class="text-muted small">Sex</div>
+                            <div class="fw-bold fs-5">{% if prediction.sex == 1 %}Male{% else %}Female{% endif %}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 bg-light rounded">
+                            <div class="text-muted small">Chest Pain Type</div>
+                            <div class="fw-bold fs-5">Type {{ prediction.cp|floatformat:0 }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 bg-light rounded">
+                            <div class="text-muted small">Resting BP</div>
+                            <div class="fw-bold fs-5">{{ prediction.trestbps|floatformat:0 }} mm Hg</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 bg-light rounded">
+                            <div class="text-muted small">Cholesterol</div>
+                            <div class="fw-bold fs-5">{{ prediction.chol|floatformat:0 }} mg/dl</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 bg-light rounded">
+                            <div class="text-muted small">Max Heart Rate</div>
+                            <div class="fw-bold fs-5">{{ prediction.thalach|floatformat:0 }} bpm</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 bg-light rounded">
+                            <div class="text-muted small">ST Depression</div>
+                            <div class="fw-bold fs-5">{{ prediction.oldpeak }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 bg-light rounded">
+                            <div class="text-muted small">Major Vessels</div>
+                            <div class="fw-bold fs-5">{{ prediction.ca|floatformat:0 }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
