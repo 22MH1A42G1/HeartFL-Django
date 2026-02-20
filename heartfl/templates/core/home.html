@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="fade-in-up">
+    <!-- Hero Section -->
+    <div class="text-center text-white mb-5">
+        <h1 class="display-3 fw-bold mb-3">
+            🩺 Heart Disease Risk Prediction
+        </h1>
+        <p class="lead fs-4">Privacy-Preserving Heart Disease Prediction using Federated Learning</p>
+        <p class="fs-5 mb-4">Collaborative AI for Healthcare Without Compromising Patient Privacy</p>
+        
+        <div class="d-flex gap-3 justify-content-center flex-wrap">
+            {% if user.is_authenticated %}
+                <a href="{% url 'prediction:predict' %}" class="btn btn-danger btn-lg btn-glow px-5">
+                    <i class="bi bi-graph-up"></i> Start Prediction
+                </a>
+                <a href="{% url 'accounts:dashboard' %}" class="btn btn-primary btn-lg btn-glow px-5">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+            {% else %}
+                <a href="{% url 'accounts:register_choice' %}" class="btn btn-danger btn-lg btn-glow px-5">
+                    <i class="bi bi-person-plus"></i> Get Started
+                </a>
+                <a href="{% url 'accounts:login' %}" class="btn btn-outline-light btn-lg px-5">
+                    <i class="bi bi-box-arrow-in-right"></i> Login
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="glass-card text-center h-100">
+                <div class="display-4 text-primary mb-3">
+                    <i class="bi bi-shield-lock-fill"></i>
+                </div>
+                <h4 class="fw-bold mb-3">Privacy Preserved</h4>
+                <p>Patient data never leaves the hospital. Only model updates are shared, ensuring complete privacy.</p>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="glass-card text-center h-100">
+                <div class="display-4 text-success mb-3">
+                    <i class="bi bi-diagram-3-fill"></i>
+                </div>
+                <h4 class="fw-bold mb-3">Federated Learning</h4>
+                <p>Multiple hospitals collaborate to train a global model without sharing sensitive patient data.</p>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="glass-card text-center h-100">
+                <div class="display-4 text-danger mb-3">
+                    <i class="bi bi-heart-pulse"></i>
+                </div>
+                <h4 class="fw-bold mb-3">Accurate Predictions</h4>
+                <p>AI-powered heart disease risk assessment with high accuracy using collaborative learning.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- How It Works -->
+    <div class="glass-card mb-5">
+        <h2 class="text-center mb-4 fw-bold">
+            <i class="bi bi-gear-fill text-primary"></i> How It Works
+        </h2>
+        
+        <div class="row g-4">
+            <div class="col-md-3 text-center">
+                <div class="display-1 text-primary mb-2">1</div>
+                <h5 class="fw-bold">Hospital Registration</h5>
+                <p class="text-muted">Hospitals register and upload encrypted patient datasets</p>
+            </div>
+            
+            <div class="col-md-3 text-center">
+                <div class="display-1 text-success mb-2">2</div>
+                <h5 class="fw-bold">Local Training</h5>
+                <p class="text-muted">Each hospital trains a local model on its own data</p>
+            </div>
+            
+            <div class="col-md-3 text-center">
+                <div class="display-1 text-warning mb-2">3</div>
+                <h5 class="fw-bold">Global Aggregation</h5>
+                <p class="text-muted">Central server aggregates model weights securely</p>
+            </div>
+            
+            <div class="col-md-3 text-center">
+                <div class="display-1 text-danger mb-2">4</div>
+                <h5 class="fw-bold">Prediction</h5>
+                <p class="text-muted">Doctors use the global model for accurate predictions</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="glass-card text-center">
+                <h2 class="display-4 fw-bold text-primary">
+                    <i class="bi bi-hospital"></i>
+                </h2>
+                <h4 class="fw-bold">Multi-Hospital</h4>
+                <p class="text-muted">Collaborative Network</p>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="glass-card text-center">
+                <h2 class="display-4 fw-bold text-success">95%</h2>
+                <h4 class="fw-bold">Accuracy</h4>
+                <p class="text-muted">Prediction Accuracy</p>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="glass-card text-center">
+                <h2 class="display-4 fw-bold text-danger">100%</h2>
+                <h4 class="fw-bold">Privacy</h4>
+                <p class="text-muted">Data Protection</p>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="glass-card text-center">
+                <h2 class="display-4 fw-bold text-warning">
+                    <i class="bi bi-lightning-fill"></i>
+                </h2>
+                <h4 class="fw-bold">Real-time</h4>
+                <p class="text-muted">Instant Results</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="glass-card text-center">
+        <h2 class="fw-bold mb-3">Ready to Get Started?</h2>
+        <p class="lead mb-4">Join the federated learning revolution in healthcare</p>
+        
+        {% if not user.is_authenticated %}
+            <div class="d-flex gap-3 justify-content-center">
+                <a href="{% url 'accounts:hospital_register' %}" class="btn btn-primary btn-lg btn-glow">
+                    <i class="bi bi-building"></i> Register as Hospital
+                </a>
+                <a href="{% url 'accounts:doctor_register' %}" class="btn btn-success btn-lg btn-glow">
+                    <i class="bi bi-person-badge"></i> Register as Doctor
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

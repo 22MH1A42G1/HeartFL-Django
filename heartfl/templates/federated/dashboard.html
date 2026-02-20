@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="fade-in-up">
+    <div class="text-center text-white mb-5">
+        <h1 class="display-4 fw-bold mb-3">
+            <i class="bi bi-diagram-3-fill"></i> Federated Learning Dashboard
+        </h1>
+        <p class="lead">Privacy-Preserving Collaborative Model Training</p>
+    </div>
+
+    <!-- Statistics -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="glass-card text-center">
+                <div class="display-3 text-primary mb-2">
+                    <i class="bi bi-building-fill"></i>
+                </div>
+                <h2 class="fw-bold">{{ total_hospitals }}</h2>
+                <p class="text-muted mb-0">Participating Hospitals</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-card text-center">
+                <div class="display-3 text-success mb-2">
+                    <i class="bi bi-database-fill"></i>
+                </div>
+                <h2 class="fw-bold">{{ total_datasets }}</h2>
+                <p class="text-muted mb-0">Datasets Uploaded</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-card text-center">
+                <div class="display-3 text-danger mb-2">
+                    <i class="bi bi-graph-up-arrow"></i>
+                </div>
+                <h2 class="fw-bold">{{ total_predictions }}</h2>
+                <p class="text-muted mb-0">Predictions Made</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- FL Process Visualization -->
+    <div class="glass-card mb-5">
+        <h3 class="fw-bold text-center mb-4">
+            <i class="bi bi-diagram-3-fill text-primary"></i> Federated Learning Process
+        </h3>
+        
+        <div class="row g-4">
+            {% for step in fl_steps %}
+                <div class="col-md-12">
+                    <div class="d-flex align-items-center gap-3 p-3 rounded"
+                         style="background: rgba(255, 255, 255, 0.1);">
+                        <div class="text-center" style="min-width: 80px;">
+                            <div class="display-4 {% if step.status == 'completed' %}text-success{% else %}text-muted{% endif %}">
+                                <i class="bi {{ step.icon }}"></i>
+                            </div>
+                            <small class="fw-bold">Step {{ step.step }}</small>
+                        </div>
+                        
+                        <div class="flex-grow-1">
+                            <h5 class="fw-bold mb-1">{{ step.title }}</h5>
+                            <p class="text-muted mb-0">{{ step.description }}</p>
+                        </div>
+                        
+                        <div class="text-center" style="min-width: 100px;">
+                            {% if step.status == 'completed' %}
+                                <span class="badge bg-success p-2">
+                                    <i class="bi bi-check-circle-fill"></i> Completed
+                                </span>
+                            {% else %}
+                                <span class="badge bg-secondary p-2">
+                                    <i class="bi bi-clock-fill"></i> Pending
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    {% if not forloop.last %}
+                        <div class="text-center my-2">
+                            <i class="bi bi-arrow-down-circle-fill text-white fs-3"></i>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Hospital Participation -->
+    <div class="glass-card mb-5">
+        <h3 class="fw-bold mb-4">
+            <i class="bi bi-building-fill text-primary"></i> Hospital Participation
+        </h3>
+        
+        {% if hospitals_data %}
+            <div class="row g-4">
+                {% for hospital in hospitals_data %}
+                    <div class="col-md-6">
+                        <div class="p-3 rounded" style="background: rgba(255, 255, 255, 0.1);">
+                            <h5 class="fw-bold mb-3">
+                                <i class="bi bi-hospital-fill text-primary"></i> {{ hospital.name }}
+                            </h5>
+                            
+                            <div class="row text-center">
+                                <div class="col-4">
+                                    <div class="display-6 text-success">{{ hospital.datasets }}</div>
+                                    <small class="text-muted">Datasets</small>
+                                </div>
+                                <div class="col-4">
+                                    <div class="display-6 text-info">{{ hospital.doctors }}</div>
+                                    <small class="text-muted">Doctors</small>
+                                </div>
+                                <div class="col-4">
+                                    <div class="display-6 text-warning">{{ hospital.records }}</div>
+                                    <small class="text-muted">Records</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle-fill me-2"></i>
+                No hospitals have joined the federated learning network yet.
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- FL Architecture Diagram -->
+    <div class="glass-card">
+        <h3 class="fw-bold text-center mb-4">
+            <i class="bi bi-diagram-2-fill text-success"></i> Federated Learning Architecture
+        </h3>
+        
+        <div class="text-center mb-4">
+            <svg width="100%" height="400" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+                <!-- Central Server -->
+                <rect x="325" y="30" width="150" height="80" rx="10" fill="#4f46e5" opacity="0.8"/>
+                <text x="400" y="65" text-anchor="middle" fill="white" font-size="16" font-weight="bold">
+                    Central Server
+                </text>
+                <text x="400" y="85" text-anchor="middle" fill="white" font-size="12">
+                    Global Model
+                </text>
+                
+                <!-- Hospital Nodes -->
+                <g id="hospital1">
+                    <rect x="50" y="200" width="150" height="80" rx="10" fill="#10b981" opacity="0.8"/>
+                    <text x="125" y="235" text-anchor="middle" fill="white" font-size="14" font-weight="bold">
+                        Hospital 1
+                    </text>
+                    <text x="125" y="255" text-anchor="middle" fill="white" font-size="10">
+                        Local Model
+                    </text>
+                </g>
+                
+                <g id="hospital2">
+                    <rect x="325" y="200" width="150" height="80" rx="10" fill="#10b981" opacity="0.8"/>
+                    <text x="400" y="235" text-anchor="middle" fill="white" font-size="14" font-weight="bold">
+                        Hospital 2
+                    </text>
+                    <text x="400" y="255" text-anchor="middle" fill="white" font-size="10">
+                        Local Model
+                    </text>
+                </g>
+                
+                <g id="hospital3">
+                    <rect x="600" y="200" width="150" height="80" rx="10" fill="#10b981" opacity="0.8"/>
+                    <text x="675" y="235" text-anchor="middle" fill="white" font-size="14" font-weight="bold">
+                        Hospital 3
+                    </text>
+                    <text x="675" y="255" text-anchor="middle" fill="white" font-size="10">
+                        Local Model
+                    </text>
+                </g>
+                
+                <!-- Arrows -->
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                        <polygon points="0 0, 10 3, 0 6" fill="white" />
+                    </marker>
+                </defs>
+                
+                <!-- Upload arrows -->
+                <line x1="125" y1="200" x2="350" y2="110" stroke="white" stroke-width="2" marker-end="url(#arrowhead)" opacity="0.6"/>
+                <line x1="400" y1="200" x2="400" y2="110" stroke="white" stroke-width="2" marker-end="url(#arrowhead)" opacity="0.6"/>
+                <line x1="675" y1="200" x2="450" y2="110" stroke="white" stroke-width="2" marker-end="url(#arrowhead)" opacity="0.6"/>
+                
+                <!-- Download arrows -->
+                <line x1="350" y1="110" x2="125" y2="200" stroke="#fbbf24" stroke-width="2" stroke-dasharray="5,5" opacity="0.6"/>
+                <line x1="400" y1="110" x2="400" y2="200" stroke="#fbbf24" stroke-width="2" stroke-dasharray="5,5" opacity="0.6"/>
+                <line x1="450" y1="110" x2="675" y2="200" stroke="#fbbf24" stroke-width="2" stroke-dasharray="5,5" opacity="0.6"/>
+                
+                <!-- Legend -->
+                <g transform="translate(250, 320)">
+                    <line x1="0" y1="0" x2="40" y2="0" stroke="white" stroke-width="2" marker-end="url(#arrowhead)"/>
+                    <text x="50" y="5" fill="white" font-size="12">Model Updates Upload</text>
+                    
+                    <line x1="0" y1="25" x2="40" y2="25" stroke="#fbbf24" stroke-width="2" stroke-dasharray="5,5"/>
+                    <text x="50" y="30" fill="white" font-size="12">Global Model Download</text>
+                </g>
+            </svg>
+        </div>
+
+        <div class="alert alert-success">
+            <h6 class="fw-bold">
+                <i class="bi bi-shield-lock-fill"></i> Privacy Guarantee
+            </h6>
+            <p class="mb-0 small">
+                Patient data remains within each hospital's premises. Only encrypted model parameters 
+                are shared with the central server, ensuring complete data privacy and HIPAA compliance.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

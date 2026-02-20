@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="fade-in-up">
+    <div class="glass-card mb-4">
+        <h2 class="fw-bold mb-3">
+            <i class="bi bi-clock-history text-primary"></i> Prediction History
+        </h2>
+        <p class="text-muted">Total Predictions: <strong>{{ total_predictions }}</strong></p>
+    </div>
+
+    {% if predictions %}
+        <div class="row g-4">
+            {% for prediction in predictions %}
+                <div class="col-md-6">
+                    <div class="glass-card h-100">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h5 class="fw-bold mb-0">
+                                <i class="bi bi-person-fill"></i> {{ prediction.patient_data.patient_name }}
+                            </h5>
+                            {% if prediction.prediction == 'high' %}
+                                <span class="badge bg-danger">High Risk</span>
+                            {% else %}
+                                <span class="badge bg-success">Low Risk</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <small class="text-muted">
+                                <i class="bi bi-calendar"></i> {{ prediction.predicted_at|date:"M d, Y h:i A" }}
+                            </small>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <small class="text-muted">Age</small>
+                                <p class="fw-bold mb-0">{{ prediction.patient_data.age }} years</p>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted">Gender</small>
+                                <p class="fw-bold mb-0">{{ prediction.patient_data.get_gender_display }}</p>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <small class="text-muted d-block mb-1">Risk Probability</small>
+                            <div class="progress" style="height: 25px;">
+                                <div class="progress-bar bg-{{ prediction.get_risk_class }}" 
+                                     role="progressbar" 
+                                     style="width: {{ prediction.probability }}%;">
+                                    {{ prediction.probability|floatformat:2 }}%
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-sm btn-outline-primary" 
+                                    data-bs-toggle="collapse" 
+                                    data-bs-target="#details-{{ prediction.id }}">
+                                <i class="bi bi-eye"></i> View Details
+                            </button>
+                            <a href="{% url 'prediction:download_report' prediction.id %}" 
+                               class="btn btn-sm btn-success">
+                                <i class="bi bi-file-earmark-pdf"></i> Download PDF
+                            </a>
+                        </div>
+
+                        <div class="collapse mt-3" id="details-{{ prediction.id }}">
+                            <hr>
+                            <h6 class="fw-bold">Clinical Data:</h6>
+                            <div class="row small">
+                                <div class="col-6">
+                                    <p class="mb-1"><strong>BP:</strong> {{ prediction.patient_data.resting_bp }} mm Hg</p>
+                                    <p class="mb-1"><strong>Cholesterol:</strong> {{ prediction.patient_data.cholesterol }} mg/dl</p>
+                                    <p class="mb-1"><strong>Max HR:</strong> {{ prediction.patient_data.max_heart_rate }}</p>
+                                </div>
+                                <div class="col-6">
+                                    <p class="mb-1"><strong>Chest Pain:</strong> Type {{ prediction.patient_data.chest_pain_type }}</p>
+                                    <p class="mb-1"><strong>ST Depression:</strong> {{ prediction.patient_data.oldpeak }}</p>
+                                    <p class="mb-1"><strong>Model:</strong> {{ prediction.model_version }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="glass-card text-center">
+            <div class="display-1 text-muted mb-3">
+                <i class="bi bi-inbox"></i>
+            </div>
+            <h4 class="fw-bold mb-3">No Predictions Yet</h4>
+            <p class="text-muted mb-4">You haven't performed any predictions yet.</p>
+            <a href="{% url 'prediction:predict' %}" class="btn btn-primary btn-lg btn-glow">
+                <i class="bi bi-plus-circle"></i> Make Your First Prediction
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

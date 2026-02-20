@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="fade-in-up">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="glass-card">
+                <h2 class="fw-bold mb-4">
+                    <i class="bi bi-file-earmark-spreadsheet-fill text-success"></i> Dataset Details
+                </h2>
+
+                <table class="table table-borderless">
+                    <tr>
+                        <th width="30%"><i class="bi bi-hash"></i> Dataset ID:</th>
+                        <td><span class="badge bg-primary">#{{ dataset.id }}</span></td>
+                    </tr>
+                    <tr>
+                        <th><i class="bi bi-building"></i> Hospital:</th>
+                        <td>{{ dataset.hospital.name }}</td>
+                    </tr>
+                    <tr>
+                        <th><i class="bi bi-file-text"></i> Filename:</th>
+                        <td><code>{{ dataset.filename }}</code></td>
+                    </tr>
+                    <tr>
+                        <th><i class="bi bi-bar-chart"></i> Records:</th>
+                        <td><span class="badge bg-info">{{ dataset.num_records }} records</span></td>
+                    </tr>
+                    <tr>
+                        <th><i class="bi bi-calendar"></i> Uploaded:</th>
+                        <td>{{ dataset.uploaded_at|date:"F d, Y h:i A" }}</td>
+                    </tr>
+                    <tr>
+                        <th><i class="bi bi-check-circle"></i> Status:</th>
+                        <td>
+                            {% if dataset.is_processed %}
+                                <span class="badge bg-success">Processed</span>
+                            {% else %}
+                                <span class="badge bg-warning">Pending Processing</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% if dataset.description %}
+                        <tr>
+                            <th><i class="bi bi-text-paragraph"></i> Description:</th>
+                            <td>{{ dataset.description }}</td>
+                        </tr>
+                    {% endif %}
+                </table>
+
+                <div class="d-grid gap-2 mt-4">
+                    <a href="{% url 'hospitals:dashboard' %}" class="btn btn-primary">
+                        <i class="bi bi-arrow-left"></i> Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,258 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-shell fade-in-up">
+    <header class="dashboard-hero glass-card">
+        <div>
+            <p class="eyebrow text-muted">
+                {% if role == 'doctor' %}
+                DOCTOR DASHBOARD
+                {% elif role == 'hospital' %}
+                HOSPITAL ADMIN
+                {% else %}
+                SECURE FEDERATED LEARNING
+                {% endif %}
+            </p>
+            <h1 class="fw-bold mb-1">
+                {% if role == 'doctor' %}
+                Welcome, Dr. {{ doctor_name|default:request.user.username }}
+                {% elif role == 'hospital' %}
+                Welcome, {{ hospital_name|default:request.user.username }}
+                {% else %}
+                Welcome, {{ request.user.username|default:"User" }}
+                {% endif %}
+            </h1>
+            <p class="text-muted mb-0">
+                {% if role == 'doctor' %}
+                Your patient predictions and FL model insights.
+                {% elif role == 'hospital' %}
+                Hospital data management and doctor oversight.
+                {% else %}
+                Your personalized HeartFL overview.
+                {% endif %}
+            </p>
+        </div>
+        <div class="hero-meta text-end">
+            <span class="badge bg-primary">{{ role_display }}</span>
+            <small class="text-muted d-block">Data shown below updates from your account activity.</small>
+        </div>
+    </header>
+
+    <!-- DOCTOR DASHBOARD -->
+    {% if role == 'doctor' %}
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="stat-card glass-card">
+                <div class="stat-label">Model Accuracy</div>
+                <div class="stat-value">{{ insights.accuracy|default:"92%" }}</div>
+                <p class="text-muted small">Latest aggregated round.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card glass-card">
+                <div class="stat-label">Latency</div>
+                <div class="stat-value">{{ insights.latency|default:"1.8s" }}</div>
+                <p class="text-muted small">Average prediction time.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card glass-card">
+                <div class="stat-label">Predictions Made</div>
+                <div class="stat-value">{{ prediction_count|default:"0" }} <span class="stat-unit">total</span></div>
+                <p class="text-muted small">Patient predictions in session.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mt-1">
+        <div class="col-lg-7">
+            <div class="glass-card h-100">
+                <div class="card-heading">
+                    <h4 class="fw-bold mb-0">Patient Predictions</h4>
+                    <p class="text-muted mb-0">Recent predictions and results.</p>
+                </div>
+                <ul class="history-list">
+                    {% for result in prediction_results %}
+                    <li class="history-item">
+                        <div>
+                            <div class="history-title">{{ result.patient_data.patient_name|default:"Patient" }}</div>
+                            <div class="text-muted small">{{ result.predicted_at|date:"M d, Y H:i" }}</div>
+                        </div>
+                        {% if result.prediction == 'high' %}
+                        <span class="badge bg-danger">High Risk</span>
+                        {% else %}
+                        <span class="badge bg-success">Low Risk</span>
+                        {% endif %}
+                    </li>
+                    {% empty %}
+                    <li class="history-item text-muted">No predictions yet. Make your first prediction to get started.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="glass-card h-100">
+                <div class="card-heading">
+                    <h4 class="fw-bold mb-0">FL Model Insights</h4>
+                    <p class="text-muted mb-0">Federated Learning performance metrics.</p>
+                </div>
+                <div class="insight-block">
+                    <div class="insight-label">Current Accuracy</div>
+                    <div class="insight-value">{{ insights.accuracy|default:"92%" }}</div>
+                </div>
+                <div class="insight-block">
+                    <div class="insight-label">Processing Latency</div>
+                    <div class="insight-value">{{ insights.latency|default:"1.8s" }}</div>
+                </div>
+                <div class="insight-block">
+                    <div class="insight-label">Hospital Participation</div>
+                    <div class="insight-value">5 <span class="stat-unit">hospitals</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HOSPITAL DASHBOARD -->
+    {% elif role == 'hospital' %}
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="stat-card glass-card">
+                <div class="stat-label">Registered Doctors</div>
+                <div class="stat-value">{{ total_doctors|default:"0" }}</div>
+                <p class="text-muted small">Active doctors in your hospital.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card glass-card">
+                <div class="stat-label">Datasets Uploaded</div>
+                <div class="stat-value">{{ total_datasets|default:"0" }}</div>
+                <p class="text-muted small">Total medical datasets contributed.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card glass-card">
+                <div class="stat-label">FL Contribution</div>
+                <div class="stat-value">Active</div>
+                <p class="text-muted small">Hospital participation in federated learning.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mt-1">
+        <div class="col-lg-7">
+            <div class="glass-card h-100">
+                <div class="card-heading">
+                    <h4 class="fw-bold mb-0">Hospital Doctors</h4>
+                    <p class="text-muted mb-0">Registered medical professionals.</p>
+                </div>
+                <ul class="history-list">
+                    {% for doctor in doctors %}
+                    <li class="history-item">
+                        <div>
+                            <div class="history-title">{{ doctor.full_name|default:doctor.user.username }}</div>
+                            <div class="text-muted small">{{ doctor.specialization|default:"General" }}</div>
+                        </div>
+                        <span class="badge bg-info text-dark">Active</span>
+                    </li>
+                    {% empty %}
+                    <li class="history-item text-muted">No doctors registered yet.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="glass-card h-100">
+                <div class="card-heading">
+                    <h4 class="fw-bold mb-0">Quick Actions</h4>
+                    <p class="text-muted mb-0">Hospital management tasks.</p>
+                </div>
+                <div class="action-block">
+                    <a href="{% url 'hospitals:dashboard' %}" class="btn btn-sm btn-outline-primary">Manage Doctors</a>
+                </div>
+                <div class="action-block">
+                    <a href="{% url 'hospitals:upload_dataset' %}" class="btn btn-sm btn-outline-primary">Upload Dataset</a>
+                </div>
+                <div class="action-block">
+                    <a href="{% url 'federated:dashboard' %}" class="btn btn-sm btn-outline-primary">View FL Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DEFAULT DASHBOARD -->
+    {% else %}
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="stat-card glass-card">
+                <div class="stat-label">Model Accuracy (placeholder)</div>
+                <div class="stat-value">{{ insights.accuracy|default:"92%" }}</div>
+                <p class="text-muted small">Latest aggregated round.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card glass-card">
+                <div class="stat-label">Latency (placeholder)</div>
+                <div class="stat-value">{{ insights.latency|default:"1.8s" }}</div>
+                <p class="text-muted small">Average processing time.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card glass-card">
+                <div class="stat-label">Profile</div>
+                <div class="stat-value">{{ role_display|capfirst }}</div>
+                <p class="text-muted small">Your user role in HeartFL.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mt-1">
+        <div class="col-lg-7">
+            <div class="glass-card h-100">
+                <div class="card-heading">
+                    <h4 class="fw-bold mb-0">Prediction History</h4>
+                    <p class="text-muted mb-0">Recent activity (placeholder data).</p>
+                </div>
+                <ul class="history-list">
+                    {% for item in prediction_history %}
+                    <li class="history-item">
+                        <div>
+                            <div class="history-title">{{ item.title|default:"Prediction" }}</div>
+                            <div class="text-muted small">{{ item.date|default:"Date pending" }}</div>
+                        </div>
+                        <span class="badge bg-info text-dark">{{ item.status|default:"Pending" }}</span>
+                    </li>
+                    {% empty %}
+                    <li class="history-item text-muted">No predictions yet. Data will appear here once available.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="glass-card h-100">
+                <div class="card-heading">
+                    <h4 class="fw-bold mb-0">Model Insights</h4>
+                    <p class="text-muted mb-0">Insights will be populated by backend.</p>
+                </div>
+                <div class="insight-block">
+                    <div class="insight-label">Current Accuracy</div>
+                    <div class="insight-value">{{ insights.accuracy|default:"92%" }}</div>
+                </div>
+                <div class="insight-block">
+                    <div class="insight-label">Latency</div>
+                    <div class="insight-value">{{ insights.latency|default:"1.8s" }}</div>
+                </div>
+                <div class="insight-block">
+                    <div class="insight-label">Notes</div>
+                    <p class="text-muted mb-0">{{ insights.notes|default:"Insights will appear here once backend wiring is complete." }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

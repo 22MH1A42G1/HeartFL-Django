@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="fade-in-up">
+    <div class="text-center mb-5 text-white">
+        <h1 class="display-4 fw-bold mb-3">
+            <i class="bi bi-person-plus-fill"></i> Register
+        </h1>
+        <p class="lead">Choose your registration type</p>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+        <div class="col-md-5">
+            <div class="glass-card text-center h-100">
+                <div class="display-1 text-primary mb-4">
+                    <i class="bi bi-building-fill"></i>
+                </div>
+                <h3 class="fw-bold mb-3">Hospital</h3>
+                <p class="text-muted mb-4">
+                    Register your hospital to participate in federated learning. 
+                    Upload datasets and manage doctors.
+                </p>
+                <a href="{% url 'accounts:hospital_register' %}" class="btn btn-primary btn-lg btn-glow w-100">
+                    <i class="bi bi-building"></i> Register as Hospital
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-5">
+            <div class="glass-card text-center h-100">
+                <div class="display-1 text-success mb-4">
+                    <i class="bi bi-person-badge-fill"></i>
+                </div>
+                <h3 class="fw-bold mb-3">Doctor</h3>
+                <p class="text-muted mb-4">
+                    Register as a doctor to perform heart disease predictions. 
+                    Must be affiliated with a registered hospital.
+                </p>
+                <a href="{% url 'accounts:doctor_register' %}" class="btn btn-success btn-lg btn-glow w-100">
+                    <i class="bi bi-person-badge"></i> Register as Doctor
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <p class="text-white">Already have an account? 
+            <a href="{% url 'accounts:login' %}" class="text-white fw-bold text-decoration-none">
+                <i class="bi bi-box-arrow-in-right"></i> Login
+            </a>
+        </p>
+    </div>
+</div>
+{% endblock %}

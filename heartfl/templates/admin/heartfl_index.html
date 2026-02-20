@@ -1,0 +1,81 @@
+{% extends "admin/index.html" %}
+{% load static %}
+
+{% block title %}
+    {{ site_title|default:_('Django Administration') }}
+{% endblock %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/admin_custom.css' %}">
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    
+    <!-- Statistics Dashboard -->
+    <div class="dashboard-stats">
+        <div class="stat-box">
+            <h3>Total Users</h3>
+            <div class="number">{{ total_users }}</div>
+        </div>
+        <div class="stat-box">
+            <h3>Hospitals</h3>
+            <div class="number">{{ total_hospitals }}</div>
+        </div>
+        <div class="stat-box">
+            <h3>Verified Hospitals</h3>
+            <div class="number" style="color: #27ae60;">{{ verified_hospitals }}</div>
+        </div>
+        <div class="stat-box">
+            <h3>Datasets</h3>
+            <div class="number">{{ total_datasets }}</div>
+        </div>
+        <div class="stat-box">
+            <h3>Unread Messages</h3>
+            <div class="number" style="color: #e74c3c;">{{ unread_messages }}</div>
+        </div>
+        <div class="stat-box">
+            <h3>User Profiles</h3>
+            <div class="number">{{ total_profiles }}</div>
+        </div>
+    </div>
+    
+    {% if app_list %}
+        {% for app in app_list %}
+            <div class="module">
+                <table>
+                    <caption>
+                        <a href="{{ app.app_url }}" class="section" title="{% blocktranslate with name=app.name %}Models in the {{ name }} application{% endblocktranslate %}">{{ app.name }}</a>
+                    </caption>
+                    <tbody>
+                        {% for model in app.models %}
+                            <tr>
+                                {% if model.admin_url %}
+                                    <th scope="row"><a href="{{ model.admin_url }}">{{ model.name }}</a></th>
+                                {% else %}
+                                    <th scope="row">{{ model.name }}</th>
+                                {% endif %}
+                                <td class="text">
+                                    {% if model.add_url %}
+                                        <a href="{{ model.add_url }}" class="addlink">{% trans 'Add' %}</a>
+                                    {% endif %}
+                                    {% if model.admin_url %}
+                                        <a href="{{ model.admin_url }}" class="changelink">{% trans 'Change' %}</a>
+                                    {% endif %}
+                                    {% if model.delete_url %}
+                                        <a href="{{ model.delete_url }}" class="deletelink">{% trans 'Delete' %}</a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>{% trans 'You don't have permission to edit anything.' %}</p>
+    {% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,265 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ page_title|default:"🩺 Heart Disease Risk Prediction" }}{% endblock %}</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom Theme CSS (WCAG 2.1 AAA Compliant) -->
+    <link rel="stylesheet" href="{% static 'css/theme.css' %}">
+    
+    <!-- Main Style CSS with Interactive Effects -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    <!-- Advanced Animations CSS -->
+    <link rel="stylesheet" href="{% static 'css/animations.css' %}">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Skip to Main Content (Accessibility) -->
+    <a href="#main-content" class="skip-to-main">Skip to main content</a>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'core:home' %}">
+                <span>🩺 Heart Disease Risk Prediction</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link {% if active_page == 'home' %}active{% endif %}" href="{% url 'core:home' %}" aria-label="Home">
+                            <i class="bi bi-house-door"></i> Home
+                        </a>
+                    </li>
+                    
+                    {% if not user.is_superuser %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if active_page == 'predict' %}active{% endif %}" href="{% url 'prediction:predict' %}" aria-label="Predict">
+                                <i class="bi bi-graph-up"></i> Predict
+                            </a>
+                        </li>
+                    {% endif %}
+                    
+                    <li class="nav-item">
+                        <a class="nav-link {% if active_page == 'fl_dashboard' %}active{% endif %}" href="{% url 'federated:dashboard' %}" aria-label="Federated Learning Dashboard">
+                            <i class="bi bi-diagram-3"></i> FL Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if active_page == 'about' %}active{% endif %}" href="{% url 'core:about' %}" aria-label="About">
+                            <i class="bi bi-info-circle"></i> About
+                        </a>
+                    </li>
+                    
+                    {% if not user.is_superuser %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if active_page == 'contact' %}active{% endif %}" href="{% url 'core:contact' %}" aria-label="Contact">
+                                <i class="bi bi-envelope"></i> Contact
+                            </a>
+                        </li>
+                    {% endif %}
+                    
+                    {% if user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-circle"></i> {{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                {% if user.is_staff or user.is_superuser %}
+                                    <li><a class="dropdown-item" href="{% url 'core:contact_messages' %}">
+                                        <i class="bi bi-envelope-open"></i> Contact Messages
+                                        {% if unread_messages_count %}
+                                            <span class="badge bg-danger">{{ unread_messages_count }}</span>
+                                        {% endif %}
+                                    </a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="{% url 'admin:index' %}">
+                                        <i class="bi bi-speedometer2"></i> Admin Dashboard
+                                    </a></li>
+                                    <li><a class="dropdown-item" href="{% url 'accounts:dashboard' %}">
+                                        <i class="bi bi-speedometer2"></i> Profile
+                                    </a></li>
+                                {% endif %}
+                                {% if not user.is_staff and not user.is_superuser %}
+                                    <li><a class="dropdown-item" href="{% url 'accounts:dashboard' %}">
+                                        <i class="bi bi-speedometer2"></i> Dashboard
+                                    </a></li>
+                                {% endif %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'accounts:logout' %}">
+                                    <i class="bi bi-box-arrow-right"></i> Logout
+                                </a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if active_page == 'login' %}active{% endif %}" href="{% url 'accounts:login' %}" aria-label="Login">
+                                <i class="bi bi-box-arrow-in-right"></i> Login
+                            </a>
+                        </li>
+                    {% endif %}
+                    
+                    <li class="nav-item ms-2">
+                        <button class="theme-toggle" id="themeToggle" title="Toggle Light Blue/Dark Green Mode" aria-label="Toggle light blue and dark green mode">
+                            <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages -->
+    {% if messages %}
+        <div class="container mt-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    <i class="bi bi-info-circle-fill me-2"></i>
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <div class="container">
+            <main id="main-content">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <h5> 🩺 Heart Disease Risk Prediction</h5>
+                    <p>Privacy-preserving heart disease prediction using federated learning.</p>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <h6>Quick Links</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'core:home' %}">Home</a></li>
+                        <li><a href="{% url 'core:about' %}">About</a></li>
+                        <li><a href="{% url 'core:contact' %}">Contact Us</a></li>
+                    </ul>
+                </div>
+                
+            </div>
+            <hr>
+            <div class="text-center">
+                <p>&copy; 2026 Heart Disease Risk Prediction. Final Year Engineering Project. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- HeartFL Utility Functions -->
+    <script src="{% static 'js/utils.js' %}"></script>
+    
+    <!-- HeartFL Main Interactive Script -->
+    <script src="{% static 'js/main.js' %}"></script>
+    
+    <!-- HeartFL Form Validation & Handling -->
+    <script src="{% static 'js/forms.js' %}"></script>
+    
+    <!-- Theme Toggle Script with WCAG Support -->
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const html = document.documentElement;
+
+        // Function to update theme
+        function setTheme(theme) {
+            html.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            updateThemeIcon(theme);
+            
+            // Announce theme change to screen readers
+            const announcement = theme === 'dark' ? 'Dark Green mode enabled' : 'Light Blue mode enabled';
+            announceToScreenReader(announcement);
+        }
+
+        // Load saved theme or detect system preference
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            
+            if (savedTheme) {
+                setTheme(savedTheme);
+            } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                setTheme('dark');
+            } else {
+                setTheme('light');
+            }
+        }
+
+        // Update theme icon
+        function updateThemeIcon(theme) {
+            if (theme === 'dark') {
+                themeIcon.className = 'bi bi-sun-fill';
+            } else {
+                themeIcon.className = 'bi bi-moon-stars-fill';
+            }
+        }
+
+        // Screen reader announcement
+        function announceToScreenReader(message) {
+            const announcement = document.createElement('div');
+            announcement.setAttribute('role', 'status');
+            announcement.setAttribute('aria-live', 'polite');
+            announcement.setAttribute('aria-atomic', 'true');
+            announcement.style.position = 'absolute';
+            announcement.style.left = '-10000px';
+            announcement.textContent = message;
+            document.body.appendChild(announcement);
+            
+            setTimeout(() => announcement.remove(), 1000);
+        }
+
+        // Theme toggle button event
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            setTheme(newTheme);
+        });
+
+        // Detect system theme changes
+        if (window.matchMedia) {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+                const newTheme = e.matches ? 'dark' : 'light';
+                // Only apply if user hasn't manually set a preference
+                if (!localStorage.getItem('theme')) {
+                    setTheme(newTheme);
+                }
+            });
+        }
+
+        // Initialize theme on page load
+        loadTheme();
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

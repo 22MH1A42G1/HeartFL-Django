@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="auth-shell fade-in-up">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <div class="auth-card glass-card">
+                <header class="auth-card__header text-center">
+                    <div class="auth-icon text-primary">
+                        <i class="bi bi-shield-lock"></i>
+                    </div>
+                    <h2 class="fw-bold">Forgot Password</h2>
+                    <p class="text-muted">Enter your email or phone number to receive a one-time password (OTP).</p>
+                </header>
+
+                <form method="post" class="auth-form" novalidate>
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="send_otp">
+
+                    <div class="mb-3">
+                        <label for="contact" class="form-label fw-bold">
+                            <i class="bi bi-envelope-paper"></i> Email or Phone Number
+                        </label>
+                        <input id="contact" name="contact" type="text" class="form-control" placeholder="you@example.com or +1 555 123 4567" required>
+                    </div>
+
+                    <div class="d-grid mb-4">
+                        <button type="submit" class="btn btn-primary btn-lg btn-glow">
+                            <i class="bi bi-send"></i> Send OTP
+                        </button>
+                    </div>
+                </form>
+
+                {% if otp_sent %}
+                <div class="divider text-center text-muted" aria-hidden="true">Enter OTP</div>
+
+                <div class="alert alert-info" role="status">
+                    {% if target_contact %}
+                    We sent an OTP to <strong>{{ target_contact }}</strong>. Enter it below to continue.
+                    {% else %}
+                    Enter the 6-digit code you received.
+                    {% endif %}
+                </div>
+
+                <form method="post" class="auth-form" novalidate>
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="verify_otp">
+
+                    <div class="mb-3">
+                        <label for="otp" class="form-label fw-bold">
+                            <i class="bi bi-key"></i> OTP
+                        </label>
+                        <input id="otp" name="otp" type="text" class="form-control" placeholder="6-digit code" required>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success btn-lg btn-glow">
+                            <i class="bi bi-check-circle"></i> Verify OTP
+                        </button>
+                    </div>
+                </form>
+                {% endif %}
+
+                <div class="text-center mt-4">
+                    <a href="{% url 'accounts:login' %}" class="link-muted fw-bold">
+                        <i class="bi bi-arrow-left"></i> Back to Login
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

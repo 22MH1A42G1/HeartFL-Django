@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="fade-in-up">
+    <div class="glass-card mb-4">
+        <h2 class="fw-bold mb-3">
+            <i class="bi bi-building-fill text-primary"></i> Hospital Dashboard
+        </h2>
+        <p class="text-muted">Welcome, <strong>{{ hospital.name }}</strong></p>
+    </div>
+
+    <!-- Statistics -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="glass-card text-center">
+                <div class="display-4 text-primary mb-2">
+                    <i class="bi bi-database-fill"></i>
+                </div>
+                <h3 class="fw-bold">{{ total_datasets }}</h3>
+                <p class="text-muted mb-0">Datasets Uploaded</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-card text-center">
+                <div class="display-4 text-success mb-2">
+                    <i class="bi bi-person-badge-fill"></i>
+                </div>
+                <h3 class="fw-bold">{{ total_doctors }}</h3>
+                <p class="text-muted mb-0">Registered Doctors</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-card text-center">
+                <div class="display-4 text-warning mb-2">
+                    <i class="bi bi-diagram-3-fill"></i>
+                </div>
+                <h3 class="fw-bold">Active</h3>
+                <p class="text-muted mb-0">FL Participation</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="glass-card mb-4">
+        <h4 class="fw-bold mb-3">
+            <i class="bi bi-lightning-fill text-warning"></i> Quick Actions
+        </h4>
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{% url 'hospitals:upload_dataset' %}" class="btn btn-primary btn-glow">
+                <i class="bi bi-cloud-upload-fill"></i> Upload Dataset
+            </a>
+            <a href="{% url 'federated:dashboard' %}" class="btn btn-success btn-glow">
+                <i class="bi bi-diagram-3-fill"></i> View FL Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Datasets Table -->
+    <div class="glass-card">
+        <h4 class="fw-bold mb-3">
+            <i class="bi bi-database-fill text-primary"></i> Your Datasets
+        </h4>
+        
+        {% if datasets %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Filename</th>
+                            <th>Records</th>
+                            <th>Uploaded</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for dataset in datasets %}
+                            <tr>
+                                <td>#{{ dataset.id }}</td>
+                                <td>
+                                    <i class="bi bi-file-earmark-spreadsheet-fill text-success"></i>
+                                    {{ dataset.filename }}
+                                </td>
+                                <td><span class="badge bg-info">{{ dataset.num_records }} records</span></td>
+                                <td>{{ dataset.uploaded_at|date:"M d, Y" }}</td>
+                                <td>
+                                    {% if dataset.is_processed %}
+                                        <span class="badge bg-success">Processed</span>
+                                    {% else %}
+                                        <span class="badge bg-warning">Pending</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'hospitals:view_dataset' dataset.id %}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye"></i> View
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle-fill me-2"></i>
+                No datasets uploaded yet. <a href="{% url 'hospitals:upload_dataset' %}" class="alert-link">Upload your first dataset</a> to participate in federated learning.
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

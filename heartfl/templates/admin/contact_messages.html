@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="fade-in-up">
+    <div class="row">
+        <div class="col-12">
+            <div class="glass-card">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="fw-bold mb-0">
+                        <i class="bi bi-envelope-open-fill text-primary"></i> Contact Messages
+                    </h2>
+                    <div class="badge bg-primary fs-6">{{ total_messages }} Total</div>
+                </div>
+
+                <!-- Filter Tabs -->
+                <ul class="nav nav-tabs mb-3">
+                    <li class="nav-item">
+                        <a class="nav-link {% if filter == 'all' %}active{% endif %}" href="?filter=all">
+                            All Messages
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if filter == 'unread' %}active{% endif %}" href="?filter=unread">
+                            Unread <span class="badge bg-danger">{{ unread_count }}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if filter == 'read' %}active{% endif %}" href="?filter=read">
+                            Read
+                        </a>
+                    </li>
+                </ul>
+
+                {% if messages_list %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th width="5%">Status</th>
+                                    <th width="15%">Name</th>
+                                    <th width="20%">Email</th>
+                                    <th width="25%">Subject</th>
+                                    <th width="20%">Date</th>
+                                    <th width="15%">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for msg in messages_list %}
+                                    <tr class="{% if not msg.is_read %}table-active{% endif %}">
+                                        <td>
+                                            {% if msg.is_read %}
+                                                <i class="bi bi-envelope-open text-muted"></i>
+                                            {% else %}
+                                                <i class="bi bi-envelope-fill text-primary"></i>
+                                            {% endif %}
+                                        </td>
+                                        <td class="fw-bold">{{ msg.name }}</td>
+                                        <td>
+                                            <a href="mailto:{{ msg.email }}" class="text-decoration-none">
+                                                {{ msg.email }}
+                                            </a>
+                                        </td>
+                                        <td>{{ msg.subject }}</td>
+                                        <td>
+                                            <small>{{ msg.submitted_at|date:"M d, Y H:i" }}</small>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <a href="{% url 'core:view_contact_message' msg.id %}" 
+                                                   class="btn btn-outline-primary">
+                                                    <i class="bi bi-eye"></i> View
+                                                </a>
+                                                <a href="{% url 'core:delete_contact_message' msg.id %}" 
+                                                   class="btn btn-outline-danger"
+                                                   onclick="return confirm('Are you sure you want to delete this message?')">
+                                                    <i class="bi bi-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-inbox display-1 text-muted"></i>
+                        <p class="text-muted mt-3">No messages found.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

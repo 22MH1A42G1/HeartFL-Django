@@ -1,0 +1,90 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}{{ title }} - {{ site_title }}{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    <h1>{{ title }}</h1>
+    <p>{{ message }}</p>
+    
+    {% if result %}
+    <div class="messagelist info" style="margin-bottom: 20px;">
+        <li>{{ result }}</li>
+    </div>
+    {% endif %}
+    
+    <div class="module" style="margin-top: 20px;">
+        <h2>🧹 Cleanup Options</h2>
+        
+        <form method="post" style="max-width: 500px;">
+            {% csrf_token %}
+            
+            <div class="form-row">
+                <label>Select a cleanup action:</label>
+            </div>
+            
+            <div class="form-row">
+                <label for="id_action">
+                    <input type="radio" name="action" id="id_action_old" value="cleanup_old_records" checked>
+                    Delete records older than (days)
+                </label>
+                <input type="number" name="days" value="30" min="1" max="365" style="margin-left: 20px; padding: 5px; width: 100px;">
+            </div>
+            
+            <div class="form-row">
+                <label for="id_action_optimize">
+                    <input type="radio" name="action" id="id_action_optimize" value="optimize_db">
+                    Optimize database
+                </label>
+            </div>
+            
+            <div class="form-row">
+                <label for="id_action_export">
+                    <input type="radio" name="action" id="id_action_export" value="export_before_cleanup">
+                    Export before cleanup
+                </label>
+            </div>
+            
+            <div class="submit-row" style="margin-top: 20px;">
+                <button type="submit" class="button default" style="background: #e74c3c;">🗑️ Execute Cleanup</button>
+                <a href="{% url 'admin:db_management' %}" class="button">← Cancel</a>
+            </div>
+        </form>
+    </div>
+    
+    <div class="module" style="margin-top: 30px;">
+        <h2>⚠️ Important Notes</h2>
+        <ul style="line-height: 1.8;">
+            <li>Cleanup operations are <strong>permanent</strong> and cannot be undone</li>
+            <li>Always export/backup your data before performing cleanup</li>
+            <li>Cleanup is performed based on the <code>created_at</code> field</li>
+            <li>System will confirm before executing any cleanup operations</li>
+        </ul>
+    </div>
+</div>
+
+<style>
+    .form-row {
+        margin-bottom: 15px;
+        padding: 10px;
+        background: #f9f9f9;
+        border-radius: 4px;
+    }
+    
+    .form-row label {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+    }
+    
+    .form-row input[type="number"] {
+        margin-left: 10px;
+        padding: 5px;
+    }
+    
+    .module ul {
+        margin-left: 20px;
+    }
+</style>
+{% endblock %}

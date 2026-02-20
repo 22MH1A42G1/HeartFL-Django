@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="fade-in-up">
+    <div class="glass-card mb-4">
+        <h1 class="text-center fw-bold mb-4">
+            <i class="bi bi-info-circle-fill text-primary"></i> About HeartFL
+        </h1>
+        <p class="lead text-center">Heart Disease Prediction using Federated Learning</p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="glass-card mb-4">
+                <h3 class="fw-bold mb-3">
+                    <i class="bi bi-book-fill text-primary"></i> Project Overview
+                </h3>
+                <p>
+                    <strong>HeartFL</strong> is a cutting-edge healthcare application that leverages <strong>Federated Learning</strong> 
+                    to predict heart disease risk while maintaining complete patient data privacy. Unlike traditional machine learning 
+                    approaches that require centralized data collection, our system enables multiple hospitals to collaboratively 
+                    train a shared model without ever sharing raw patient data.
+                </p>
+                
+                <h4 class="fw-bold mt-4 mb-3">Key Features</h4>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Privacy-preserving machine learning</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Multi-hospital collaboration</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Real-time heart disease risk assessment</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Secure dataset management</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Interactive FL dashboard</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Prediction history tracking</li>
+                </ul>
+            </div>
+
+            <div class="glass-card mb-4">
+                <h3 class="fw-bold mb-3">
+                    <i class="bi bi-diagram-3-fill text-success"></i> What is Federated Learning?
+                </h3>
+                <p>
+                    <strong>Federated Learning (FL)</strong> is a machine learning technique that trains an algorithm across 
+                    multiple decentralized edge devices or servers holding local data samples, without exchanging them.
+                </p>
+                
+                <h5 class="fw-bold mt-3">FL Process in HeartFL:</h5>
+                <ol class="ps-3">
+                    <li class="mb-2"><strong>Dataset Upload:</strong> Each hospital uploads its patient dataset (stored locally)</li>
+                    <li class="mb-2"><strong>Local Training:</strong> Each hospital trains a model on its own data</li>
+                    <li class="mb-2"><strong>Model Update Sharing:</strong> Only model weights/parameters are shared with the central server</li>
+                    <li class="mb-2"><strong>Global Aggregation:</strong> Central server aggregates all model updates</li>
+                    <li class="mb-2"><strong>Distribution:</strong> Updated global model is sent back to all hospitals</li>
+                </ol>
+
+                <div class="alert alert-info mt-3">
+                    <i class="bi bi-lightbulb-fill me-2"></i>
+                    <strong>Privacy Advantage:</strong> Patient data never leaves the hospital premises. Only encrypted model 
+                    parameters are shared, ensuring HIPAA compliance and data privacy.
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="glass-card mb-4">
+                <h4 class="fw-bold mb-3">
+                    <i class="bi bi-stack text-warning"></i> Tech Stack
+                </h4>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><strong>Backend:</strong> Django 5.0</li>
+                    <li class="mb-2"><strong>Frontend:</strong> Bootstrap 5, HTML5, CSS3</li>
+                    <li class="mb-2"><strong>Database:</strong> SQLite</li>
+                    <li class="mb-2"><strong>ML Framework:</strong> Scikit-learn</li>
+                    <li class="mb-2"><strong>Authentication:</strong> Django Auth</li>
+                    <li class="mb-2"><strong>UI Theme:</strong> Glassmorphism</li>
+                </ul>
+            </div>
+
+            <div class="glass-card mb-4">
+                <h4 class="fw-bold mb-3">
+                    <i class="bi bi-person-badge-fill text-danger"></i> User Roles
+                </h4>
+                
+                <h6 class="fw-bold mt-3">Hospital</h6>
+                <ul class="small">
+                    <li>Register and login</li>
+                    <li>Upload datasets (CSV)</li>
+                    <li>Manage hospital profile</li>
+                    <li>View registered doctors</li>
+                </ul>
+
+                <h6 class="fw-bold mt-3">Doctor</h6>
+                <ul class="small">
+                    <li>Register (linked to hospital)</li>
+                    <li>Perform predictions</li>
+                    <li>View prediction history</li>
+                    <li>Analyze patient risk</li>
+                </ul>
+
+                <h6 class="fw-bold mt-3">Admin</h6>
+                <ul class="small">
+                    <li>Manage all users</li>
+                    <li>Monitor FL process</li>
+                    <li>View analytics</li>
+                </ul>
+            </div>
+
+            <div class="glass-card">
+                <h4 class="fw-bold mb-3">
+                    <i class="bi bi-award-fill text-success"></i> Project Info
+                </h4>
+                <p class="mb-1"><strong>Domain:</strong> Healthcare AI</p>
+                <p class="mb-1"><strong>Type:</strong> Final Year Project</p>
+                <p class="mb-1"><strong>Year:</strong> 2026</p>
+                <p class="mb-0"><strong>Category:</strong> Machine Learning</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="glass-card mt-4">
+        <h3 class="fw-bold text-center mb-4">
+            <i class="bi bi-graph-up-arrow text-primary"></i> ML Model Features
+        </h3>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <h5 class="fw-bold mb-3">Input Features:</h5>
+                <ul>
+                    <li>Age</li>
+                    <li>Gender</li>
+                    <li>Chest Pain Type</li>
+                    <li>Resting Blood Pressure</li>
+                    <li>Serum Cholesterol</li>
+                    <li>Fasting Blood Sugar</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <ul class="mt-4 mt-md-5">
+                    <li>Resting ECG Results</li>
+                    <li>Maximum Heart Rate</li>
+                    <li>Exercise Induced Angina</li>
+                    <li>ST Depression (Oldpeak)</li>
+                    <li>ST Slope</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="alert alert-success mt-3">
+            <strong><i class="bi bi-check-circle-fill me-2"></i> Output:</strong> 
+            Binary classification - <span class="badge bg-success">Low Risk</span> or 
+            <span class="badge bg-danger">High Risk</span> with probability percentage
+        </div>
+    </div>
+</div>
+{% endblock %}
