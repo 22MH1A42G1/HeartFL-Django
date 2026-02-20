@@ -52,18 +52,24 @@ def start_round(request):
             fl_round.status = 'aggregating'
             fl_round.save()
             global_weights = aggregate_models(hospital_weights)
-            avg_accuracy = sum(hm.local_accuracy for hm in fl_round.hospital_models.all()) / len(hospital_weights)
+            # Weighted average accuracy by number of samples
+            total_samples = sum(w['n_samples'] for w in hospital_weights)
+            hospital_models_qs = fl_round.hospital_models.all()
+            weighted_accuracy = sum(
+                hm.local_accuracy * w['n_samples'] / total_samples
+                for hm, w in zip(hospital_models_qs, hospital_weights)
+            )
             GlobalModel.objects.create(
                 fl_round=fl_round,
-                global_accuracy=avg_accuracy,
+                global_accuracy=weighted_accuracy,
                 model_weights=global_weights
             )
             fl_round.status = 'completed'
-            fl_round.accuracy = avg_accuracy
+            fl_round.accuracy = weighted_accuracy
             fl_round.participants_count = len(hospital_weights)
             fl_round.completed_at = timezone.now()
             fl_round.save()
-            messages.success(request, f'FL Round {round_number} completed! Global accuracy: {avg_accuracy:.2%}')
+            messages.success(request, f'FL Round {round_number} completed! Global accuracy: {weighted_accuracy:.2%}')
         else:
             fl_round.status = 'failed'
             fl_round.save()

@@ -20,9 +20,11 @@ class Prediction(models.Model):
     prediction = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     
+    @property
     def risk_percentage(self):
         return round(self.risk_score * 100, 1)
     
+    @property
     def risk_label(self):
         if self.risk_score >= 0.7:
             return 'High'

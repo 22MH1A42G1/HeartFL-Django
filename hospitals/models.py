@@ -10,9 +10,11 @@ class Hospital(models.Model):
     def __str__(self):
         return self.name
     
+    @property
     def dataset_count(self):
         return self.datasets.count()
     
+    @property
     def latest_dataset(self):
         return self.datasets.order_by('-uploaded_at').first()
 

@@ -62,7 +62,13 @@ def upload_dataset(request):
             dataset.save()
             
             try:
+                from federation.fl_utils import FEATURE_COLUMNS
                 df = pd.read_csv(dataset.csv_file.path)
+                df.columns = [c.lower().strip() for c in df.columns]
+                required_cols = FEATURE_COLUMNS + ['target']
+                missing = [c for c in required_cols if c not in df.columns]
+                if missing:
+                    raise ValueError(f"Missing required columns: {', '.join(missing)}")
                 dataset.rows_count = len(df)
                 dataset.status = 'ready'
                 dataset.save()
