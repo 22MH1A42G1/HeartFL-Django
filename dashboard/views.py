@@ -11,7 +11,7 @@ def index(request):
     total_rounds = FLRound.objects.count()
     total_predictions = Prediction.objects.count()
     latest_model = GlobalModel.objects.order_by('-created_at').first()
-    latest_accuracy = latest_model.global_accuracy if latest_model else 0
+    latest_accuracy = latest_model.global_accuracy if latest_model else 0.0
     
     completed_rounds = FLRound.objects.filter(status='completed').order_by('round_number')
     chart_labels = [f'Round {r.round_number}' for r in completed_rounds]

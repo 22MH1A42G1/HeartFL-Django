@@ -29,5 +29,5 @@ class PredictionForm(forms.Form):
     ca = forms.ChoiceField(label='Number of Major Vessels (0-3)', choices=[(0,0),(1,1),(2,2),(3,3)],
         widget=forms.Select(attrs={'class': 'form-select'}))
     thal = forms.ChoiceField(label='Thalassemia', 
-        choices=[(1,'Normal'),(2,'Fixed Defect'),(3,'Reversable Defect')],
+        choices=[(1,'Normal'),(2,'Fixed Defect'),(3,'Reversible Defect')],
         widget=forms.Select(attrs={'class': 'form-select'}))
