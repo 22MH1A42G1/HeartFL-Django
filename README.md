@@ -1,4 +1,4 @@
-# HeartFL v1.0
+# HeartFL-Django
 
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/)
 [![Django](https://img.shields.io/badge/Django-4.2.28-green.svg)](https://www.djangoproject.com/)
