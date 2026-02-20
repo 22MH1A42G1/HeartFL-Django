@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HeartFL Diagram Viewer</title>
+  <style>
+    :root {
+      --bg: #f5faff;
+      --text: #0b3d91;
+      --panel: #ffffff;
+      --border: #cfd8e3;
+      --accent: #1b4332;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      padding: 16px 20px;
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      padding: 12px 20px;
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+    }
+
+    select, button {
+      font-size: 14px;
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      color: var(--text);
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    .viewer {
+      padding: 20px;
+      overflow: auto;
+    }
+
+    .canvas {
+      display: inline-block;
+      transform-origin: top left;
+    }
+
+    .image {
+      display: block;
+      max-width: none;
+      height: auto;
+      border: 1px solid var(--border);
+      background: #ffffff;
+    }
+
+    .scale-label {
+      font-weight: 600;
+      color: var(--accent);
+      min-width: 80px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>HeartFL Diagram Viewer</h1>
+  </header>
+
+  <div class="toolbar">
+    <label for="diagram">Diagram:</label>
+    <select id="diagram">
+      <option value="component">Component Diagram</option>
+      <option value="usecase">Use Case Diagram (GIF)</option>
+      <option value="activity">Activity Diagram (GIF)</option>
+      <option value="architecture">System Architecture Diagram (GIF)</option>
+    </select>
+
+    <button id="zoomOut" aria-label="Zoom out">-</button>
+    <button id="zoomIn" aria-label="Zoom in">+</button>
+    <button id="reset" aria-label="Reset zoom">Reset</button>
+    <span class="scale-label" id="scaleLabel">100%</span>
+  </div>
+
+  <div class="viewer">
+    <div class="canvas" id="canvas">
+      <img id="diagramImage" class="image" src="component-diagram.svg" alt="Diagram" />
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var scale = 1;
+      var minScale = 0.5;
+      var maxScale = 2.5;
+
+      var canvas = document.getElementById("canvas");
+      var image = document.getElementById("diagramImage");
+      var scaleLabel = document.getElementById("scaleLabel");
+      var selector = document.getElementById("diagram");
+
+      var sources = {
+        component: "component-diagram.svg",
+        usecase: "usecase-diagram.gif",
+        activity: "activity-diagram.gif",
+        architecture: "system-architecture-diagram.gif"
+      };
+
+      function applyScale() {
+        canvas.style.transform = "scale(" + scale.toFixed(2) + ")";
+        scaleLabel.textContent = Math.round(scale * 100) + "%";
+      }
+
+      function setScale(next) {
+        scale = Math.max(minScale, Math.min(maxScale, next));
+        applyScale();
+      }
+
+      document.getElementById("zoomIn").addEventListener("click", function () {
+        setScale(scale + 0.1);
+      });
+
+      document.getElementById("zoomOut").addEventListener("click", function () {
+        setScale(scale - 0.1);
+      });
+
+      document.getElementById("reset").addEventListener("click", function () {
+        setScale(1);
+      });
+
+      selector.addEventListener("change", function () {
+        image.src = sources[selector.value] || sources.component;
+        image.alt = selector.options[selector.selectedIndex].text;
+        setScale(1);
+      });
+
+      applyScale();
+    })();
+  </script>
+</body>
+</html>
