@@ -164,13 +164,13 @@ The HeartFL application follows a **Model-View-Template (MVT)** architecture pat
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                          Client Layer                            │
+│                          Client Layer                           │
 │  (Browser: Bootstrap 5.3, JavaScript, Theme System)             │
 └────────────────────────────┬────────────────────────────────────┘
                              │
                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                      Django Framework                            │
+┌───────────────────────────────────────────────────────────────┐
+│                      Django Framework                         │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐         │
 │  │   accounts/  │  │  hospitals/  │  │ prediction/  │         │
 │  │   (Auth)     │  │  (Dataset)   │  │  (ML Core)   │         │
@@ -179,13 +179,13 @@ The HeartFL application follows a **Model-View-Template (MVT)** architecture pat
 │  │  federated/  │  │    core/     │  │  Templates   │         │
 │  │   (FL Viz)   │  │  (Homepage)  │  │   (Views)    │         │
 │  └──────────────┘  └──────────────┘  └──────────────┘         │
-└────────────────────────────┬────────────────────────────────────┘
+└────────────────────────────┬──────────────────────────────────┘
                              │
                              ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                    Data Layer (SQLite3)                          │
-│  • User Authentication  • Hospital Data  • Patient Records       │
-│  • Predictions  • Datasets  • FL Metadata                        │
+│                    Data Layer (SQLite3)                         │
+│  • User Authentication  • Hospital Data  • Patient Records      │
+│  • Predictions  • Datasets  • FL Metadata                       │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
