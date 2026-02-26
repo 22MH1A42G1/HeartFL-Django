@@ -238,3 +238,36 @@ LOGGING = {
 # Create logs directory if it doesn't exist
 LOGS_DIR = BASE_DIR / 'logs'
 LOGS_DIR.mkdir(exist_ok=True)
+
+
+# ============================================================================
+# CORS CONFIGURATION (Cross-Origin Resource Sharing)
+# ============================================================================
+# For API access from different domains (e.g., Vercel deployment)
+
+CORS_ALLOWED_ORIGINS = [
+    host.strip() for host in os.getenv('CORS_ALLOWED_ORIGINS', '').split(',') if host.strip()
+]
+
+# Allow all methods and headers for development
+# In production, restrict to specific methods (GET, POST, etc.)
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
