@@ -1,0 +1,42 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}{{ title }} - {{ site_title }}{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    <h1>{{ title }}</h1>
+    
+    <div class="module" style="margin-top: 20px;">
+        <h2>Database Statistics</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Model</th>
+                    <th>Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app_name, models in stats.items %}
+                    <tr style="font-weight: bold; background: #f0f0f0;">
+                        <td colspan="2">{{ app_name }}</td>
+                    </tr>
+                    {% for model_name, count in models.items %}
+                        <tr>
+                            <td style="padding-left: 30px;">{{ model_name }}</td>
+                            <td style="text-align: center;">
+                                <span style="background: #3498db; color: white; padding: 5px 10px; border-radius: 3px; font-weight: bold;">{{ count }}</span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="submit-row" style="margin-top: 20px;">
+        <a href="{% url 'admin:db_cleanup' %}" class="button default">🧹 Database Cleanup</a>
+        <a href="{% url 'admin:data_backup' %}" class="button default">💾 Data Backup & Export</a>
+    </div>
+</div>
+{% endblock %}

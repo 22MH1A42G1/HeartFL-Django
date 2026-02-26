@@ -1,0 +1,390 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    .settings-hero {
+        margin-bottom: 2rem;
+    }
+
+    .color-preview {
+        width: 60px;
+        height: 60px;
+        border-radius: 8px;
+        border: 2px solid var(--border-color);
+        margin: 10px 0;
+        transition: transform 0.3s ease;
+    }
+
+    .color-preview:hover {
+        transform: scale(1.05);
+    }
+
+    .color-section {
+        margin-bottom: 2.5rem;
+        padding: 1.5rem;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+    }
+
+    .color-section h4 {
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid var(--primary-color);
+    }
+
+    .color-input-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .color-input-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+
+    .color-input-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .form-control-color {
+        cursor: pointer;
+        border: 1px solid var(--input-border) !important;
+    }
+
+    .help-text {
+        font-size: 0.875rem;
+        color: var(--text-tertiary);
+        margin-top: 0.25rem;
+    }
+
+    .theme-preference {
+        margin-top: 2rem;
+        padding: 1.5rem;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+    }
+
+    .form-check {
+        padding-left: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .form-check-input {
+        width: 1.25em;
+        height: 1.25em;
+        margin-top: 0.3em;
+        vertical-align: top;
+        border: 2px solid var(--input-border);
+        appearance: none;
+        background-color: var(--input-bg);
+        cursor: pointer;
+    }
+
+    .form-check-input:checked {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    .form-check-label {
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .reset-btn {
+        margin-top: 2rem;
+    }
+
+    .color-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .color-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .preview-box {
+        padding: 1rem;
+        border-radius: 6px;
+        margin-top: 0.5rem;
+        font-size: 0.875rem;
+    }
+
+    .btn-reset-colors {
+        margin-top: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="settings-container fade-in-up">
+    <!-- Settings Hero -->
+    <header class="settings-hero glass-card">
+        <div>
+            <p class="eyebrow text-muted">
+                PERSONALIZATION
+            </p>
+            <h1 class="fw-bold mb-1">
+                Theme Settings
+            </h1>
+            <p class="text-muted mb-0">
+                Customize your Dark & Light mode colors for a personalized HeartFL experience.
+            </p>
+        </div>
+        <div class="hero-meta text-end">
+            <span class="badge bg-primary">Settings</span>
+            <small class="text-muted d-block">Your preferences are saved automatically.</small>
+        </div>
+    </header>
+
+    <!-- Settings Form -->
+    <form method="post" class="settings-form">
+        {% csrf_token %}
+
+        <!-- Light Mode Section -->
+        <div class="color-section">
+            <h4>
+                <i class="bi bi-sun-fill"></i> Light Mode Colors
+            </h4>
+            
+            <div class="color-grid">
+                <!-- Background Color -->
+                <div class="color-input-group">
+                    <label for="{{ form.light_bg_color.id_for_label }}">
+                        {{ form.light_bg_color.label }}
+                    </label>
+                    <div class="color-input-wrapper">
+                        {{ form.light_bg_color }}
+                        <div class="color-preview" id="preview_light_bg" title="Background preview"></div>
+                    </div>
+                    <p class="help-text">Choose your light mode background color</p>
+                </div>
+
+                <!-- Text Color -->
+                <div class="color-input-group">
+                    <label for="{{ form.light_text_color.id_for_label }}">
+                        {{ form.light_text_color.label }}
+                    </label>
+                    <div class="color-input-wrapper">
+                        {{ form.light_text_color }}
+                        <div class="color-preview" id="preview_light_text" title="Text preview"></div>
+                    </div>
+                    <p class="help-text">Choose your light mode text color</p>
+                </div>
+
+                <!-- Accent Color -->
+                <div class="color-input-group">
+                    <label for="{{ form.light_accent_color.id_for_label }}">
+                        {{ form.light_accent_color.label }}
+                    </label>
+                    <div class="color-input-wrapper">
+                        {{ form.light_accent_color }}
+                        <div class="color-preview" id="preview_light_accent" title="Accent preview"></div>
+                    </div>
+                    <p class="help-text">Choose your light mode accent/primary color</p>
+                </div>
+
+                <!-- Card Background -->
+                <div class="color-input-group">
+                    <label for="{{ form.light_card_bg.id_for_label }}">
+                        {{ form.light_card_bg.label }}
+                    </label>
+                    <div class="color-input-wrapper">
+                        {{ form.light_card_bg }}
+                        <div class="color-preview" id="preview_light_card" title="Card background preview"></div>
+                    </div>
+                    <p class="help-text">Choose your light mode card/container background</p>
+                </div>
+            </div>
+
+            <!-- Light Mode Preview -->
+            <div class="preview-box mt-3" id="light_preview_box" style="border: 1px solid #ccc;">
+                <strong>Light Mode Preview:</strong><br>
+                This is how your light mode will look with the selected colors.
+            </div>
+        </div>
+
+        <!-- Dark Mode Section -->
+        <div class="color-section">
+            <h4>
+                <i class="bi bi-moon-stars-fill"></i> Dark Mode Colors
+            </h4>
+            
+            <div class="color-grid">
+                <!-- Background Color -->
+                <div class="color-input-group">
+                    <label for="{{ form.dark_bg_color.id_for_label }}">
+                        {{ form.dark_bg_color.label }}
+                    </label>
+                    <div class="color-input-wrapper">
+                        {{ form.dark_bg_color }}
+                        <div class="color-preview" id="preview_dark_bg" title="Background preview"></div>
+                    </div>
+                    <p class="help-text">Choose your dark mode background color</p>
+                </div>
+
+                <!-- Text Color -->
+                <div class="color-input-group">
+                    <label for="{{ form.dark_text_color.id_for_label }}">
+                        {{ form.dark_text_color.label }}
+                    </label>
+                    <div class="color-input-wrapper">
+                        {{ form.dark_text_color }}
+                        <div class="color-preview" id="preview_dark_text" title="Text preview"></div>
+                    </div>
+                    <p class="help-text">Choose your dark mode text color</p>
+                </div>
+
+                <!-- Accent Color -->
+                <div class="color-input-group">
+                    <label for="{{ form.dark_accent_color.id_for_label }}">
+                        {{ form.dark_accent_color.label }}
+                    </label>
+                    <div class="color-input-wrapper">
+                        {{ form.dark_accent_color }}
+                        <div class="color-preview" id="preview_dark_accent" title="Accent preview"></div>
+                    </div>
+                    <p class="help-text">Choose your dark mode accent/primary color</p>
+                </div>
+
+                <!-- Card Background -->
+                <div class="color-input-group">
+                    <label for="{{ form.dark_card_bg.id_for_label }}">
+                        {{ form.dark_card_bg.label }}
+                    </label>
+                    <div class="color-input-wrapper">
+                        {{ form.dark_card_bg }}
+                        <div class="color-preview" id="preview_dark_card" title="Card background preview"></div>
+                    </div>
+                    <p class="help-text">Choose your dark mode card/container background</p>
+                </div>
+            </div>
+
+            <!-- Dark Mode Preview -->
+            <div class="preview-box mt-3" id="dark_preview_box" style="border: 1px solid #555; background-color: #333; color: #ccc;">
+                <strong>Dark Mode Preview:</strong><br>
+                This is how your dark mode will look with the selected colors.
+            </div>
+        </div>
+
+        <!-- Theme Preference Section -->
+        <div class="theme-preference">
+            <h4>
+                <i class="bi bi-gear-fill"></i> Default Theme Preference
+            </h4>
+            <div>
+                {% for value, label in form.preferred_theme.field.choices %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="preferred_theme" id="theme_{{ value }}" value="{{ value }}" 
+                            {% if form.preferred_theme.value == value %}checked{% endif %}>
+                        <label class="form-check-label" for="theme_{{ value }}">
+                            {% if value == 'light' %}
+                                <i class="bi bi-sun-fill"></i> Light Mode (Always use light mode)
+                            {% elif value == 'dark' %}
+                                <i class="bi bi-moon-stars-fill"></i> Dark Mode (Always use dark mode)
+                            {% else %}
+                                <i class="bi bi-circle-half"></i> Auto (Respect system preference)
+                            {% endif %}
+                        </label>
+                    </div>
+                {% endfor %}
+            </div>
+            <p class="help-text mt-3">Choose your default theme preference. You can always toggle between modes using the theme button in the navbar.</p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-primary btn-lg">
+                <i class="bi bi-check-circle"></i> Save Settings
+            </button>
+            <a href="{% url 'accounts:dashboard' %}" class="btn btn-outline-secondary btn-lg">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </form>
+</section>
+
+<!-- Color Preview Update Script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Color input elements
+    const lightBgInput = document.querySelector('input[name="light_bg_color"]');
+    const lightTextInput = document.querySelector('input[name="light_text_color"]');
+    const lightAccentInput = document.querySelector('input[name="light_accent_color"]');
+    const lightCardInput = document.querySelector('input[name="light_card_bg"]');
+    
+    const darkBgInput = document.querySelector('input[name="dark_bg_color"]');
+    const darkTextInput = document.querySelector('input[name="dark_text_color"]');
+    const darkAccentInput = document.querySelector('input[name="dark_accent_color"]');
+    const darkCardInput = document.querySelector('input[name="dark_card_bg"]');
+
+    // Preview boxes
+    const previewLightBg = document.getElementById('preview_light_bg');
+    const previewLightText = document.getElementById('preview_light_text');
+    const previewLightAccent = document.getElementById('preview_light_accent');
+    const previewLightCard = document.getElementById('preview_light_card');
+    
+    const previewDarkBg = document.getElementById('preview_dark_bg');
+    const previewDarkText = document.getElementById('preview_dark_text');
+    const previewDarkAccent = document.getElementById('preview_dark_accent');
+    const previewDarkCard = document.getElementById('preview_dark_card');
+
+    const lightPreviewBox = document.getElementById('light_preview_box');
+    const darkPreviewBox = document.getElementById('dark_preview_box');
+
+    // Update preview boxes when colors change
+    function updateLightPreview() {
+        const bg = lightBgInput.value;
+        const text = lightTextInput.value;
+        const accent = lightAccentInput.value;
+        const card = lightCardInput.value;
+
+        previewLightBg.style.backgroundColor = bg;
+        previewLightText.style.backgroundColor = text;
+        previewLightAccent.style.backgroundColor = accent;
+        previewLightCard.style.backgroundColor = card;
+
+        lightPreviewBox.style.backgroundColor = bg;
+        lightPreviewBox.style.color = text;
+        lightPreviewBox.style.borderColor = accent;
+    }
+
+    function updateDarkPreview() {
+        const bg = darkBgInput.value;
+        const text = darkTextInput.value;
+        const accent = darkAccentInput.value;
+        const card = darkCardInput.value;
+
+        previewDarkBg.style.backgroundColor = bg;
+        previewDarkText.style.backgroundColor = text;
+        previewDarkAccent.style.backgroundColor = accent;
+        previewDarkCard.style.backgroundColor = card;
+
+        darkPreviewBox.style.backgroundColor = bg;
+        darkPreviewBox.style.color = text;
+        darkPreviewBox.style.borderColor = accent;
+    }
+
+    // Add event listeners
+    [lightBgInput, lightTextInput, lightAccentInput, lightCardInput].forEach(input => {
+        input.addEventListener('input', updateLightPreview);
+    });
+
+    [darkBgInput, darkTextInput, darkAccentInput, darkCardInput].forEach(input => {
+        input.addEventListener('input', updateDarkPreview);
+    });
+
+    // Initialize previews
+    updateLightPreview();
+    updateDarkPreview();
+});
+</script>
+{% endblock %}

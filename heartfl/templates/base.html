@@ -1,0 +1,446 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ page_title|default:"🩺 Heart Disease Risk Prediction" }}{% endblock %}</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom Theme CSS (WCAG 2.1 AAA Compliant) -->
+    <link rel="stylesheet" href="{% static 'css/theme.css' %}">
+    
+    <!-- Main Style CSS with Interactive Effects -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    <!-- Advanced Animations CSS -->
+    <link rel="stylesheet" href="{% static 'css/animations.css' %}">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Skip to Main Content (Accessibility) -->
+    <a href="#main-content" class="skip-to-main">Skip to main content</a>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'core:home' %}">
+                <span>🩺 Heart Disease Risk Prediction</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link {% if active_page == 'home' %}active{% endif %}" href="{% url 'core:home' %}" aria-label="Home">
+                            <i class="bi bi-house-door"></i> Home
+                        </a>
+                    </li>
+                    
+                    {% if not user.is_superuser %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if active_page == 'predict' %}active{% endif %}" href="{% url 'prediction:predict' %}" aria-label="Predict">
+                                <i class="bi bi-graph-up"></i> Predict
+                            </a>
+                        </li>
+                    {% endif %}
+                    
+                    <li class="nav-item">
+                        <a class="nav-link {% if active_page == 'fl_dashboard' %}active{% endif %}" href="{% url 'federated:dashboard' %}" aria-label="Federated Learning Dashboard">
+                            <i class="bi bi-diagram-3"></i> FL Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if active_page == 'about' %}active{% endif %}" href="{% url 'core:about' %}" aria-label="About">
+                            <i class="bi bi-info-circle"></i> About
+                        </a>
+                    </li>
+                    
+                    {% if not user.is_superuser %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if active_page == 'contact' %}active{% endif %}" href="{% url 'core:contact' %}" aria-label="Contact">
+                                <i class="bi bi-envelope"></i> Contact
+                            </a>
+                        </li>
+                    {% endif %}
+                    
+                    {% if user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-circle"></i> {{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                {% if user.is_staff or user.is_superuser %}
+                                    <li><a class="dropdown-item" href="{% url 'core:contact_messages' %}">
+                                        <i class="bi bi-envelope-open"></i> Contact Messages
+                                        {% if unread_messages_count %}
+                                            <span class="badge bg-danger">{{ unread_messages_count }}</span>
+                                        {% endif %}
+                                    </a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="{% url 'admin:index' %}">
+                                        <i class="bi bi-speedometer2"></i> Admin Dashboard
+                                    </a></li>
+                                    <li><a class="dropdown-item" href="{% url 'accounts:dashboard' %}">
+                                        <i class="bi bi-speedometer2"></i> Profile
+                                    </a></li>
+                                {% endif %}
+                                {% if not user.is_staff and not user.is_superuser %}
+                                    <li><a class="dropdown-item" href="{% url 'accounts:dashboard' %}">
+                                        <i class="bi bi-speedometer2"></i> Dashboard
+                                    </a></li>
+                                {% endif %}
+                                <li><a class="dropdown-item" href="{% url 'accounts:settings' %}">
+                                    <i class="bi bi-gear"></i> Settings
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'accounts:logout' %}">
+                                    <i class="bi bi-box-arrow-right"></i> Logout
+                                </a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if active_page == 'login' %}active{% endif %}" href="{% url 'accounts:login' %}" aria-label="Login">
+                                <i class="bi bi-box-arrow-in-right"></i> Login
+                            </a>
+                        </li>
+                    {% endif %}
+                    
+                    <li class="nav-item ms-2">
+                        <button class="theme-toggle" id="themeToggle" title="Toggle Light Blue/Dark Green Mode" aria-label="Toggle light blue and dark green mode">
+                            <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages -->
+    {% if messages %}
+        <div class="container mt-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    <i class="bi bi-info-circle-fill me-2"></i>
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <div class="main-container" style="padding-top: 20px;">
+        <div class="container">
+            <main id="main-content">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+
+    <!-- Page Navigation Buttons -->
+    <div class="page-nav-buttons">
+        <button id="pageUpBtn" class="page-nav-btn page-up" title="Scroll to Top" aria-label="Scroll to top">
+            <i class="bi bi-chevron-up"></i>
+        </button>
+        <button id="pageDownBtn" class="page-nav-btn page-down" title="Scroll to Bottom" aria-label="Scroll to bottom">
+            <i class="bi bi-chevron-down"></i>
+        </button>
+    </div>
+
+    <!-- AI Chatbot Widget -->
+    <div class="chatbot-widget" id="chatbotWidget">
+        <button class="chatbot-toggle" id="chatbotToggle" title="AI Assistant" aria-label="Open AI Assistant">
+            <i class="bi bi-chat-dots-fill"></i>
+        </button>
+        
+        <div class="chatbot-window" id="chatbotWindow">
+            <div class="chatbot-header">
+                <div class="chatbot-header-info">
+                    <i class="bi bi-robot"></i>
+                    <span>HeartFL AI Assistant</span>
+                </div>
+                <button class="chatbot-close" id="chatbotClose" aria-label="Close chat">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            
+            <div class="chatbot-messages" id="chatbotMessages">
+                <div class="chatbot-message bot-message">
+                    <div class="message-avatar">
+                        <i class="bi bi-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        <p>Hello! I'm your HeartFL AI Assistant. I can help you with:</p>
+                        <ul>
+                            <li>Understanding heart disease prediction</li>
+                            <li>Navigating the website</li>
+                            <li>Explaining federated learning</li>
+                            <li>Reporting technical issues</li>
+                            <li>Answering questions about features</li>
+                        </ul>
+                        <p>How can I assist you today?</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chatbot-input-area">
+                <textarea 
+                    id="chatbotInput" 
+                    class="chatbot-input" 
+                    placeholder="Type your message here..."
+                    rows="1"
+                    aria-label="Chat message input"
+                ></textarea>
+                <button id="chatbotSend" class="chatbot-send-btn" aria-label="Send message">
+                    <i class="bi bi-send-fill"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <h5> 🩺 Heart Disease Risk Prediction</h5>
+                    <p>Privacy-preserving heart disease prediction using federated learning.</p>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <h6>Quick Links</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'core:home' %}">Home</a></li>
+                        <li><a href="{% url 'core:about' %}">About</a></li>
+                        <li><a href="{% url 'core:contact' %}">Contact Us</a></li>
+                    </ul>
+                </div>
+                
+            </div>
+            <hr>
+            <div class="text-center">
+                <p>&copy; 2026 Heart Disease Risk Prediction. Final Year Engineering Project. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Dropdown Fix Script -->
+    <script>
+        // Prevent navbar collapse when clicking dropdown items
+        document.addEventListener('click', function(event) {
+            const dropdownMenu = event.target.closest('.dropdown-menu');
+            if (dropdownMenu) {
+                event.stopPropagation();
+            }
+        });
+        
+        // Handle dropdown positioning and navbar visibility
+        const dropdownToggles = document.querySelectorAll('[data-bs-toggle="dropdown"]');
+        dropdownToggles.forEach(toggle => {
+            toggle.addEventListener('shown.bs.dropdown', function() {
+                const navbar = document.querySelector('.navbar');
+                const dropdownMenu = this.nextElementSibling;
+                
+                if (navbar) {
+                    navbar.style.overflow = 'visible';
+                    navbar.style.zIndex = '1000';
+                }
+                
+                // Ensure dropdown menu is properly positioned
+                if (dropdownMenu && dropdownMenu.classList.contains('dropdown-menu')) {
+                    dropdownMenu.style.zIndex = '10000';
+                    dropdownMenu.style.position = 'absolute';
+                    dropdownMenu.style.top = '100%';
+                    dropdownMenu.style.right = '0';
+                    dropdownMenu.style.marginTop = '0.5rem';
+                }
+            });
+            
+            toggle.addEventListener('hidden.bs.dropdown', function() {
+                const navbar = document.querySelector('.navbar');
+                if (navbar) {
+                    navbar.style.overflow = 'visible';
+                }
+            });
+        });
+    </script>
+    
+    <!-- HeartFL Utility Functions -->
+    <script src="{% static 'js/utils.js' %}"></script>
+    
+    <!-- Chatbot Configuration -->
+    <script src="{% static 'js/chatbot-config.js' %}"></script>
+    
+    <!-- HeartFL Main Interactive Script -->
+    <script src="{% static 'js/main.js' %}"></script>
+    
+    <!-- HeartFL Form Validation & Handling -->
+    <script src="{% static 'js/forms.js' %}"></script>
+    
+    <!-- Chatbot & Page Navigation Initialization -->
+    <script>
+        // Force reload - Initialize chatbot and page navigation
+        console.log('Initializing HeartFL features...');
+        
+        // Check if elements exist
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, checking elements...');
+            console.log('Chatbot toggle:', document.getElementById('chatbotToggle'));
+            console.log('Page up button:', document.getElementById('pageUpBtn'));
+            console.log('Page down button:', document.getElementById('pageDownBtn'));
+            
+            // Reinitialize in case main.js didn't load
+            if (typeof window.heartFLChatbot === 'undefined') {
+                console.log('Reinitializing chatbot...');
+                window.heartFLChatbot = new HeartFLChatbot();
+            }
+        });
+    </script>
+    
+    <!-- Theme Toggle Script with WCAG Support & Custom Colors -->
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const html = document.documentElement;
+
+        // Custom theme colors for authenticated users
+        {% if user.is_authenticated and user_theme_settings %}
+        const customColors = {
+            light: {
+                'background-color': '{{ user_theme_settings.light_bg_color }}',
+                'text-color': '{{ user_theme_settings.light_text_color }}',
+                'primary-color': '{{ user_theme_settings.light_accent_color }}',
+                'card-bg': '{{ user_theme_settings.light_card_bg }}',
+            },
+            dark: {
+                'background-color': '{{ user_theme_settings.dark_bg_color }}',
+                'text-color': '{{ user_theme_settings.dark_text_color }}',
+                'primary-color': '{{ user_theme_settings.dark_accent_color }}',
+                'card-bg': '{{ user_theme_settings.dark_card_bg }}',
+            }
+        };
+        {% endif %}
+
+        // Function to apply custom colors as CSS variables
+        function applyCustomColors(theme) {
+            {% if user.is_authenticated and user_theme_settings %}
+            if (customColors && customColors[theme]) {
+                const colors = customColors[theme];
+                for (const [key, value] of Object.entries(colors)) {
+                    // Only apply if we have custom colors (not defaults)
+                    if (value && typeof value === 'string') {
+                        html.style.setProperty('--custom-' + key, value);
+                    }
+                }
+            }
+            {% endif %}
+        }
+
+        // Function to update theme
+        function setTheme(theme) {
+            html.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            updateThemeIcon(theme);
+            applyCustomColors(theme);
+            
+            // Announce theme change to screen readers
+            const announcement = theme === 'dark' ? 'Dark mode enabled' : 'Light mode enabled';
+            announceToScreenReader(announcement);
+        }
+
+        // Load saved theme or detect system preference
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            {% if user.is_authenticated and user_theme_settings %}
+                const userPreference = '{{ user_theme_settings.preferred_theme }}';
+                
+                if (userPreference !== 'auto') {
+                    setTheme(userPreference);
+                } else if (savedTheme) {
+                    setTheme(savedTheme);
+                } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    setTheme('dark');
+                } else {
+                    setTheme('light');
+                }
+            {% else %}
+                if (savedTheme) {
+                    setTheme(savedTheme);
+                } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    setTheme('dark');
+                } else {
+                    setTheme('light');
+                }
+            {% endif %}
+        }
+
+        // Update theme icon
+        function updateThemeIcon(theme) {
+            if (theme === 'dark') {
+                themeIcon.className = 'bi bi-sun-fill';
+            } else {
+                themeIcon.className = 'bi bi-moon-stars-fill';
+            }
+        }
+
+        // Screen reader announcement
+        function announceToScreenReader(message) {
+            const announcement = document.createElement('div');
+            announcement.setAttribute('role', 'status');
+            announcement.setAttribute('aria-live', 'polite');
+            announcement.setAttribute('aria-atomic', 'true');
+            announcement.style.position = 'absolute';
+            announcement.style.left = '-10000px';
+            announcement.textContent = message;
+            document.body.appendChild(announcement);
+            
+            setTimeout(() => announcement.remove(), 1000);
+        }
+
+        // Theme toggle button event
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            setTheme(newTheme);
+        });
+
+        // Detect system theme changes
+        if (window.matchMedia) {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+                const newTheme = e.matches ? 'dark' : 'light';
+                // Only apply if user hasn't manually set a preference
+                {% if user.is_authenticated and user_theme_settings %}
+                    if ('{{ user_theme_settings.preferred_theme }}' === 'auto' && !localStorage.getItem('theme')) {
+                        setTheme(newTheme);
+                    }
+                {% else %}
+                    if (!localStorage.getItem('theme')) {
+                        setTheme(newTheme);
+                    }
+                {% endif %}
+            });
+        }
+
+        // Initialize theme on page load
+        loadTheme();
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="fade-in-up">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="glass-card">
+                <h2 class="fw-bold mb-4">
+                    <i class="bi bi-cloud-upload-fill text-primary"></i> Upload Dataset
+                </h2>
+                <p class="text-muted mb-4">Upload patient data (CSV) for federated learning training</p>
+
+                <div class="alert alert-info mb-4">
+                    <h6 class="fw-bold"><i class="bi bi-info-circle-fill"></i> Dataset Requirements:</h6>
+                    <ul class="mb-0">
+                        <li>File format: CSV (.csv)</li>
+                        <li>Must contain heart disease patient records</li>
+                        <li>Data will be stored locally and used for local model training</li>
+                        <li>Only model weights will be shared with the central server</li>
+                    </ul>
+                </div>
+
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-file-earmark-spreadsheet"></i> Dataset File (CSV)
+                        </label>
+                        {{ form.dataset_file }}
+                        {% if form.dataset_file.errors %}
+                            <div class="text-danger small mt-1">{{ form.dataset_file.errors }}</div>
+                        {% endif %}
+                        <small class="form-text text-muted">Upload a CSV file containing patient records</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-hash"></i> Number of Records
+                        </label>
+                        {{ form.num_records }}
+                        {% if form.num_records.errors %}
+                            <div class="text-danger small mt-1">{{ form.num_records.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-text-paragraph"></i> Description (Optional)
+                        </label>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                            <div class="text-danger small mt-1">{{ form.description.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg btn-glow">
+                            <i class="bi bi-cloud-upload-fill"></i> Upload Dataset
+                        </button>
+                        <a href="{% url 'hospitals:dashboard' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to Dashboard
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
