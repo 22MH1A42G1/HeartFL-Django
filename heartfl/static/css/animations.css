@@ -1,0 +1,466 @@
+/**
+ * HeartFL - Advanced Animations & Interactive Effects
+ * CSS classes for advanced animations and interactive behavior
+ */
+
+/* ============================================================================ */
+/* STAGGER ANIMATIONS */
+/* ============================================================================ */
+
+@keyframes staggerFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Apply stagger to children */
+.stagger-children > * {
+    animation: staggerFadeIn 0.6s ease forwards;
+}
+
+.stagger-children > :nth-child(1) { animation-delay: 0s; }
+.stagger-children > :nth-child(2) { animation-delay: 0.1s; }
+.stagger-children > :nth-child(3) { animation-delay: 0.2s; }
+.stagger-children > :nth-child(4) { animation-delay: 0.3s; }
+.stagger-children > :nth-child(5) { animation-delay: 0.4s; }
+.stagger-children > :nth-child(6) { animation-delay: 0.5s; }
+
+/* ============================================================================ */
+/* HOVER EFFECTS */
+/* ============================================================================ */
+
+.hover-lift {
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.hover-lift:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.hover-glow {
+    transition: all 0.3s ease;
+}
+
+.hover-glow:hover {
+    filter: drop-shadow(0 0 8px rgba(37, 99, 235, 0.6));
+}
+
+.hover-scale {
+    transition: transform 0.3s ease;
+}
+
+.hover-scale:hover {
+    transform: scale(1.05);
+}
+
+.hover-color-shift {
+    transition: color 0.3s ease;
+}
+
+.hover-color-shift:hover {
+    color: var(--accent);
+}
+
+.hover-underline {
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.hover-underline::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -5px;
+    left: 0;
+    background-color: var(--accent);
+    transition: width 0.3s ease;
+}
+
+.hover-underline:hover::after {
+    width: 100%;
+}
+
+/* ============================================================================ */
+/* TEXT & CONTENT ANIMATIONS */
+/* ============================================================================ */
+
+@keyframes typewriter {
+    from {
+        width: 0;
+        border-right-color: var(--accent);
+    }
+    to {
+        width: 100%;
+    }
+}
+
+@keyframes blink {
+    50% {
+        border-right-color: transparent;
+    }
+}
+
+.typewriter {
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 3px solid var(--accent);
+    animation: typewriter 3.5s steps(40, end), blink 0.75s step-end infinite;
+}
+
+@keyframes popIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.pop-in {
+    animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* ============================================================================ */
+/* SEPARATOR & DIVIDER ANIMATIONS */
+/* ============================================================================ */
+
+.divider-animated {
+    position: relative;
+    text-align: center;
+    margin: 2rem 0;
+}
+
+.divider-animated::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--border-subtle), transparent);
+}
+
+.divider-animated span {
+    position: relative;
+    background: var(--page-bg);
+    padding: 0 1rem;
+    color: var(--text-muted);
+}
+
+/* ============================================================================ */
+/* SHADOW & DEPTH EFFECTS */
+/* ============================================================================ */
+
+.shadow-hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+    transition: box-shadow 0.3s ease;
+}
+
+.shadow-hover:hover {
+    box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
+}
+
+.shadow-soft {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.shadow-md {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.shadow-lg {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.shadow-xl {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* ============================================================================ */
+/* SCROLL REVEAL ANIMATIONS */
+/* ============================================================================ */
+
+@keyframes revealFromLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-100px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes revealFromRight {
+    from {
+        opacity: 0;
+        transform: translateX(100px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes revealFromTop {
+    from {
+        opacity: 0;
+        transform: translateY(-100px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes revealFromBottom {
+    from {
+        opacity: 0;
+        transform: translateY(100px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.reveal-left {
+    animation: revealFromLeft 0.8s ease forwards;
+}
+
+.reveal-right {
+    animation: revealFromRight 0.8s ease forwards;
+}
+
+.reveal-top {
+    animation: revealFromTop 0.8s ease forwards;
+}
+
+.reveal-bottom {
+    animation: revealFromBottom 0.8s ease forwards;
+}
+
+/* ============================================================================ */
+/* SKELETON LOADING ANIMATIONS */
+/* ============================================================================ */
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+.skeleton {
+    background: linear-gradient(
+        90deg,
+        var(--border-subtle),
+        rgba(255, 255, 255, 0.2),
+        var(--border-subtle)
+    );
+    background-size: 1000px 100%;
+    animation: skeleton-loading 2s infinite;
+    border-radius: 8px;
+}
+
+/* ============================================================================ */
+/* NOTIFICATION & ALERT ANIMATIONS */
+/* ============================================================================ */
+
+@keyframes slideInFromTop {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutToTop {
+    from {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+}
+
+.notification {
+    animation: slideInFromTop 0.4s ease;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.notification.dismissing {
+    animation: slideOutToTop 0.4s ease forwards;
+}
+
+/* ============================================================================ */
+/* TRANSITION UTILITIES */
+/* ============================================================================ */
+
+.transition-all {
+    transition: all 0.3s ease;
+}
+
+.transition-colors {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.transition-transform {
+    transition: transform 0.3s ease;
+}
+
+.transition-opacity {
+    transition: opacity 0.3s ease;
+}
+
+.transition-shadow {
+    transition: box-shadow 0.3s ease;
+}
+
+.transition-all-slow {
+    transition: all 0.6s ease;
+}
+
+.transition-all-fast {
+    transition: all 0.15s ease;
+}
+
+/* ============================================================================ */
+/* VISIBILITY UTILITIES */
+/* ============================================================================ */
+
+.hidden {
+    display: none !important;
+}
+
+.invisible {
+    visibility: hidden;
+}
+
+.visible {
+    visibility: visible;
+}
+
+.opacity-0 { opacity: 0; }
+.opacity-25 { opacity: 0.25; }
+.opacity-50 { opacity: 0.5; }
+.opacity-75 { opacity: 0.75; }
+.opacity-100 { opacity: 1; }
+
+/* ============================================================================ */
+/* TRANSFORM UTILITIES */
+/* ============================================================================ */
+
+.scale-75 { transform: scale(0.75); }
+.scale-90 { transform: scale(0.9); }
+.scale-100 { transform: scale(1); }
+.scale-110 { transform: scale(1.1); }
+.scale-125 { transform: scale(1.25); }
+
+.rotate-45 { transform: rotate(45deg); }
+.rotate-90 { transform: rotate(90deg); }
+.rotate-180 { transform: rotate(180deg); }
+.rotate-270 { transform: rotate(270deg); }
+
+.translate-x-0 { transform: translateX(0); }
+.translate-x-2 { transform: translateX(0.5rem); }
+.translate-x-4 { transform: translateX(1rem); }
+.translate-x--2 { transform: translateX(-0.5rem); }
+.translate-x--4 { transform: translateX(-1rem); }
+
+.translate-y-0 { transform: translateY(0); }
+.translate-y-2 { transform: translateY(0.5rem); }
+.translate-y-4 { transform: translateY(1rem); }
+.translate-y--2 { transform: translateY(-0.5rem); }
+.translate-y--4 { transform: translateY(-1rem); }
+
+/* ============================================================================ */
+/* FILTER UTILITIES */
+/* ============================================================================ */
+
+.brightness-75 { filter: brightness(0.75); }
+.brightness-90 { filter: brightness(0.9); }
+.brightness-110 { filter: brightness(1.1); }
+.brightness-125 { filter: brightness(1.25); }
+
+.contrast-75 { filter: contrast(0.75); }
+.contrast-100 { filter: contrast(1); }
+.contrast-125 { filter: contrast(1.25); }
+
+.grayscale { filter: grayscale(100%); }
+.grayscale-0 { filter: grayscale(0%); }
+
+.blur-sm { filter: blur(4px); }
+.blur-md { filter: blur(8px); }
+.blur-lg { filter: blur(12px); }
+
+.brightness-hover:hover {
+    filter: brightness(1.1);
+}
+
+.grayscale-hover:hover {
+    filter: grayscale(0%);
+}
+
+/* ============================================================================ */
+/* BACKDROP EFFECTS */
+/* ============================================================================ */
+
+.backdrop-blur {
+    backdrop-filter: blur(8px);
+}
+
+.backdrop-blur-sm {
+    backdrop-filter: blur(4px);
+}
+
+.backdrop-blur-lg {
+    backdrop-filter: blur(12px);
+}
+
+.backdrop-brightness {
+    backdrop-filter: brightness(0.8);
+}
+
+/* ============================================================================ */
+/* RESPONSIVE ANIMATIONS */
+/* ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .hover-lift:hover {
+        transform: translateY(-4px);
+    }
+
+    .stagger-children > * {
+        animation-delay: 0 !important;
+    }
+}
