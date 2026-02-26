@@ -1,0 +1,100 @@
+# HeartFL Production Requirements
+# Install with: pip install -r requirements-production.txt
+
+# ============================================================================
+# PRODUCTION DEPENDENCIES
+# ============================================================================
+
+# Core Web Framework
+Django==5.2.11
+python-dotenv==1.0.0
+
+# ============================================================================
+# PRODUCTION SERVER & MIDDLEWARE
+# ============================================================================
+
+# WSGI HTTP Server (production-grade server)
+gunicorn==21.2.0
+
+# Static files middleware for production
+whitenoise==6.6.0
+
+# ============================================================================
+# DATA PROCESSING & MACHINE LEARNING
+# ============================================================================
+
+# Numerical Computing
+numpy>=1.24.0
+
+# Data Analysis & CSV Processing
+pandas>=2.0.0
+
+# Machine Learning & Inference
+scikit-learn>=1.3.0
+
+# ============================================================================
+# REPORT GENERATION
+# ============================================================================
+
+# PDF Report Generation
+reportlab>=4.0.0
+
+# Image Processing
+Pillow>=10.0.0
+
+# ============================================================================
+# DATABASE DRIVERS (Select based on your database choice)
+# ============================================================================
+
+# SQLite3 (built into Python - no installation needed)
+# For PostgreSQL (recommended for production):
+# psycopg2-binary==2.9.9  # Uncomment for PostgreSQL
+
+# ============================================================================
+# OPTIONAL: AWS S3 INTEGRATION FOR STATIC FILES
+# ============================================================================
+
+# AWS S3 storage backend
+# boto3==1.34.0 # Uncomment if using S3 for static files
+# django-storages==1.14.2 # Uncomment if using S3
+
+# ============================================================================
+# OPTIONAL: MONITORING & LOGGING
+# ============================================================================
+
+# Sentry for error tracking
+# sentry-sdk==1.39.1 # Uncomment for error monitoring
+
+# ============================================================================
+# OPTIONAL: CACHING
+# ============================================================================
+
+# Redis cache backend
+# redis==5.0.0 # Uncomment if using Redis caching
+# django-redis==5.4.0 # Uncomment if using Redis
+
+# ============================================================================
+# INSTALLATION INSTRUCTIONS
+# ============================================================================
+#
+# For basic SQLite3 production:
+#   pip install -r requirements-production.txt
+#
+# For PostgreSQL support:
+#   pip install -r requirements-production.txt
+#   Uncomment: psycopg2-binary
+#   pip install psycopg2-binary
+#
+# For AWS S3 static files:
+#   Uncomment: boto3, django-storages
+#   pip install boto3 django-storages
+#
+# For error tracking with Sentry:
+#   Uncomment: sentry-sdk
+#   pip install sentry-sdk
+#
+# For Redis caching:
+#   Uncomment: redis, django-redis
+#   pip install redis django-redis
+#
+# ============================================================================

@@ -15,11 +15,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
+# Generate new key with: python -c "import secrets; print(secrets.token_urlsafe(50))"
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-heartfl-2026-change-in-production')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*']
+DEBUG = os.getenv('DEBUG', 'True').lower() in ('true', '1', 'yes')
+
+# Configure allowed hosts from environment variable (comma-separated)
+_allowed_hosts = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1')
+ALLOWED_HOSTS = [host.strip() for host in _allowed_hosts.split(',')]
 
 
 # Application definition
@@ -152,3 +156,85 @@ else:
     EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'adityaindana1710@gmail.com')
     EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
     DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+# ============================================================================
+# SECURITY CONFIGURATION FOR PRODUCTION
+# ============================================================================
+
+# HTTPS and SSL Configuration
+SECURE_SSL_REDIRECT = os.getenv('SECURE_SSL_REDIRECT', 'False').lower() in ('true', '1', 'yes')
+SESSION_COOKIE_SECURE = os.getenv('SESSION_COOKIE_SECURE', 'False').lower() in ('true', '1', 'yes')
+CSRF_COOKIE_SECURE = os.getenv('CSRF_COOKIE_SECURE', 'False').lower() in ('true', '1', 'yes')
+
+# HSTS (HTTP Strict Transport Security)
+SECURE_HSTS_SECONDS = int(os.getenv('SECURE_HSTS_SECONDS', '0'))
+SECURE_HSTS_INCLUDE_SUBDOMAINS = os.getenv('SECURE_HSTS_INCLUDE_SUBDOMAINS', 'False').lower() in ('true', '1', 'yes')
+SECURE_HSTS_PRELOAD = os.getenv('SECURE_HSTS_PRELOAD', 'False').lower() in ('true', '1', 'yes')
+
+# Security Headers
+SECURE_BROWSER_XSS_FILTER = True  # X-XSS-Protection header
+SECURE_CONTENT_SECURITY_POLICY = True
+X_FRAME_OPTIONS = 'DENY'  # Prevent clickjacking
+SECURE_REFERRER_POLICY = 'same-origin'
+
+# Session and Cookie Security
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Strict'
+CSRF_COOKIE_SAMESITE = 'Strict'
+SESSION_COOKIE_AGE = int(os.getenv('SESSION_COOKIE_AGE', '3600'))  # 1 hour
+
+# CSRF Protection
+CSRF_TRUSTED_ORIGINS = [host.strip() for host in os.getenv('CSRF_TRUSTED_ORIGINS', '').split(',') if host.strip()]
+
+# Password validation (already configured above)
+# No changes needed - Django default is secure
+
+# ============================================================================
+# LOGGING CONFIGURATION
+# ============================================================================
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+        'file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'django.log'),
+            'maxBytes': 1024 * 1024 * 10,  # 10MB
+            'backupCount': 5,
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'file'],
+            'level': os.getenv('LOGGING_LEVEL', 'INFO'),
+            'propagate': False,
+        },
+        'django.security': {
+            'handlers': ['console', 'file'],
+            'level': 'WARNING',
+            'propagate': False,
+        },
+    },
+}
+
+# Create logs directory if it doesn't exist
+LOGS_DIR = BASE_DIR / 'logs'
+LOGS_DIR.mkdir(exist_ok=True)
