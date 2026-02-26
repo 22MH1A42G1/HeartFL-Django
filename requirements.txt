@@ -1,5 +1,5 @@
 # HeartFL - Heart Disease Prediction with Federated Learning
-# Python 3.13.7 - Last Updated: February 20, 2026
+# Python 3.12+ - Last Updated: February 26, 2026
 
 # ============================================================================
 # CORE DEPENDENCIES (Required for basic functionality)
@@ -12,7 +12,7 @@ Django==5.2.11
 python-dotenv==1.0.0
 
 # Database
-# SQLite3 is included with Python
+# SQLite3 is included with Python - No additional installation needed
 
 # ============================================================================
 # DATA PROCESSING & MACHINE LEARNING
@@ -36,23 +36,6 @@ reportlab>=4.0.0
 
 # Image Processing (for report assets)
 Pillow>=10.0.0
-
-# ============================================================================
-# DATABASE & ODM (Optional - for MongoDB support)
-# ============================================================================
-
-# MongoDB Python Driver
-pymongo>=4.5.0
-
-# MongoDB Object-Document Mapper
-mongoengine>=0.27.0
-
-# ============================================================================
-# COMMUNICATION (Optional - for SMS OTP)
-# ============================================================================
-
-# Twilio SMS Service
-twilio>=8.10.0
 
 # ============================================================================
 # PRODUCTION DEPLOYMENT (Recommended for production)
@@ -86,10 +69,8 @@ twilio>=8.10.0
 #
 # To include development/testing tools, uncomment the DEVELOPMENT section
 #
-# Optional Features:
-#   - MongoDB support: ensure pymongo and mongoengine are installed
-#   - SMS OTP: ensure twilio is installed and TWILIO_* env vars are set
-#   - PDF reports: reportlab and Pillow are required
+# Project uses SQLite3 database (built into Python)
+# PDF reports require reportlab and Pillow
 #
 # Django Settings:
 #   - See heartfl/settings.py for configuration

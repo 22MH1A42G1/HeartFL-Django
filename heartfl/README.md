@@ -1,10 +1,22 @@
 ﻿# 🩺 HeartFL - Heart Disease Prediction with Federated Learning
 
+[![Python Version](https://img.shields.io/badge/python-3.12%2B-blue.svg)](https://www.python.org/downloads/)
+[![Django Version](https://img.shields.io/badge/django-5.2.11-green.svg)](https://www.djangoproject.com/)
+[![License](https://img.shields.io/badge/license-Educational-orange.svg)](../LICENSE)
+[![GitHub](https://img.shields.io/badge/GitHub-HeartFL--Django-black.svg)](https://github.com/22MH1A42G1/HeartFL-Django)
+
 A comprehensive Django-based web application for heart disease risk prediction using federated learning principles. The platform enables hospitals to upload datasets and doctors to make patient-level predictions while maintaining data privacy through distributed model training.
 
 **Version:** 1.0.0 (Production Ready)  
-**Last Updated:** February 20, 2026  
+**Last Updated:** February 26, 2026  
 **Status:** ✅ Fully Functional
+
+## 🔗 Quick Links
+
+- [🌿 GitHub Repository](https://github.com/22MH1A42G1/HeartFL-Django)
+- [🌿 Main Branch](https://github.com/22MH1A42G1/HeartFL-Django/tree/main)
+- [🐛 Report Issues](https://github.com/22MH1A42G1/HeartFL-Django/issues)
+- [🍴 Fork Project](https://github.com/22MH1A42G1/HeartFL-Django/fork)
 
 ---
 
@@ -102,73 +114,131 @@ This project demonstrates practical federated learning with a real-world healthc
 ## 🏗️ Architecture
 
 ### Technology Stack
-- **Backend:** Django 5.2.11 (Framework)
-- **Database:** SQLite3 (db.sqlite3)
-- **Frontend:** Django Templates + Bootstrap 5.3
-- **Styling:** Custom CSS with theme variables
-- **ML Model:** Pre-trained scikit-learn pickle artifacts
-- **Server:** Django development server (port 8080)
-- **Python Version:** 3.13.7
 
-### Component Diagram
+| Component | Technology | Version |
+|-----------|-----------|----------|
+| **Backend Framework** | Django | 5.2.11 |
+| **Database** | SQLite3 | Built-in |
+| **Frontend** | Bootstrap | 5.3 |
+| **Template Engine** | Django Templates | - |
+| **ML Framework** | scikit-learn | ≥1.3.0 |
+| **Data Processing** | pandas | ≥2.0.0 |
+| **Numerical Computing** | numpy | ≥1.24.0 |
+| **Report Generation** | ReportLab | ≥4.0.0 |
+| **Python Version** | Python | 3.12+ |
+| **Server** | Django Dev Server | Port 8080 |
 
-<img src="docs/component-diagram.svg" alt="Component Diagram (zoomed in)" width="1000" />
+### Architecture Diagrams
 
+#### System Architecture
 
-### Animated Diagrams (GIF)
-Use Case Diagram
-<img src="docs/usecase-diagram.gif" alt="Use Case Diagram (GIF)" width="900" />
-Activity Diagram
-<img src="docs/activity-diagram.gif" alt="Activity Diagram (GIF)" width="900" />
-System Architecture Diagram
-<img src="docs/system-architecture-diagram.gif" alt="System Architecture Diagram (GIF)" width="900" />
+<div align="center">
+  <img src="docs/system-architecture-diagram.gif" alt="System Architecture Diagram" style="max-width: 100%; height: auto;" width="850" />
+  <p><em>Complete system architecture showing component interactions</em></p>
+</div>
+
+#### Component Structure
+
+<div align="center">
+  <img src="docs/component-diagram.svg" alt="Component Diagram" style="max-width: 100%; height: auto;" width="850" />
+  <p><em>Detailed component architecture and dependencies</em></p>
+</div>
+
+#### Use Case Diagram
+
+<div align="center">
+  <img src="docs/usecase-diagram.gif" alt="Use Case Diagram" style="max-width: 100%; height: auto;" width="850" />
+  <p><em>User roles and system interactions</em></p>
+</div>
+
+#### Activity Flow
+
+<div align="center">
+  <img src="docs/activity-diagram.gif" alt="Activity Diagram" style="max-width: 100%; height: auto;" width="850" />
+  <p><em>Workflow for prediction and federated learning processes</em></p>
+</div>
+
+### Architecture Overview
+
+The HeartFL application follows a **Model-View-Template (MVT)** architecture pattern:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                          Client Layer                            │
+│  (Browser: Bootstrap 5.3, JavaScript, Theme System)             │
+└────────────────────────────┬────────────────────────────────────┘
+                             │
+                             ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                      Django Framework                            │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐         │
+│  │   accounts/  │  │  hospitals/  │  │ prediction/  │         │
+│  │   (Auth)     │  │  (Dataset)   │  │  (ML Core)   │         │
+│  └──────────────┘  └──────────────┘  └──────────────┘         │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐         │
+│  │  federated/  │  │    core/     │  │  Templates   │         │
+│  │   (FL Viz)   │  │  (Homepage)  │  │   (Views)    │         │
+│  └──────────────┘  └──────────────┘  └──────────────┘         │
+└────────────────────────────┬────────────────────────────────────┘
+                             │
+                             ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    Data Layer (SQLite3)                          │
+│  • User Authentication  • Hospital Data  • Patient Records       │
+│  • Predictions  • Datasets  • FL Metadata                        │
+└─────────────────────────────────────────────────────────────────┘
+```
 
 ---
 
 ## 🚀 Setup Guide
 
 ### Prerequisites
-- **OS:** Windows 10/11 (with PowerShell)
-- **Python:** 3.13.x (tested on 3.13.7)
+- **OS:** Linux / Windows / macOS
+- **Python:** 3.12 or higher (tested on 3.12 and 3.13)
 - **pip:** Python package manager
-- **Git:** Version control (optional)
+- **Git:** Version control (recommended)
 
-### Step 1: Clone/Download Project
+### Step 1: Clone Repository
 
-```powershell
-# Navigate to project directory
-cd "C:\Users\LENOVO\Desktop\Final_year_projects\Heart-Disase-Prediction-FL\FL-v3"
+```bash
+# Clone from GitHub
+git clone https://github.com/22MH1A42G1/HeartFL-Django.git
+cd HeartFL-Django
 ```
 
 ### Step 2: Create & Activate Virtual Environment
 
-```powershell
-# Create virtual environment (if not exists)
+```bash
+# Create virtual environment
 python -m venv venv
 
-# Activate virtual environment
-.\venv\Scripts\Activate.ps1
+# Activate (Linux/macOS)
+source venv/bin/activate
+
+# Activate (Windows)
+venv\Scripts\activate
 ```
 
 ### Step 3: Install Dependencies
 
-```powershell
-# Install core packages
-pip install django==5.2.11 python-dotenv
+```bash
+# Install all required packages from requirements.txt
+pip install -r requirements.txt
 
-# Install optional but recommended
-pip install numpy pandas scikit-learn reportlab pymongo mongoengine twilio
+# Or install core packages manually
+pip install django==5.2.11 python-dotenv numpy pandas scikit-learn reportlab Pillow
 ```
 
-### Step 4: Navigate to Project Directory
+### Step 4: Navigate to Django Project
 
-```powershell
+```bash
 cd heartfl
 ```
 
 ### Step 5: Apply Database Migrations
 
-```powershell
+```bash
 python manage.py migrate
 ```
 
@@ -183,7 +253,7 @@ Running migrations:
 
 ### Step 6: Create Superuser (Admin Account)
 
-```powershell
+```bash
 python manage.py createsuperuser
 ```
 
@@ -194,7 +264,7 @@ Follow prompts:
 
 ### Step 7: Collect Static Files
 
-```powershell
+```bash
 python manage.py collectstatic --noinput
 ```
 
@@ -203,14 +273,14 @@ Expected output:
 134 static files copied to 'staticfiles'
 ```
 
-### Step 8: Start Server
+### Step 8: Start Development Server
 
-```powershell
-# Option 1: Direct command
+```bash
+# Start server on port 8080
 python manage.py runserver 8080
 
-# Option 2: Using batch file (from project root)
-.\heartfl\start_server.bat
+# Or start on default port 8000
+python manage.py runserver
 ```
 
 Success message:
@@ -513,16 +583,16 @@ GET  /media/                         Media files serve
 
 ## ⚙️ Configuration
 
-### settings.py (heartfl/settings.py)
+### Django Settings (heartfl/settings.py)
 
-**Debug & Security**
+#### Debug & Security
 ```python
 DEBUG = True  # Set to False in production
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*']
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'change-me-in-production')
 ```
 
-**Database**
+#### Database Configuration
 ```python
 DATABASES = {
     'default': {
@@ -532,18 +602,26 @@ DATABASES = {
 }
 ```
 
-**Static & Media Files**
+> **Note:** This project uses **SQLite3** for simplicity and portability. 
+> The database file is automatically created at `heartfl/db.sqlite3`.
+
+#### Static & Media Files
 ```python
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 ```
 
-**Email Configuration**
+#### Email Configuration (Optional)
 ```python
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # or smtp
+# For development (prints emails to console)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# For production (SMTP)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
@@ -551,24 +629,44 @@ EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 ```
 
-**Time Zone**
+#### Time Zone & Internationalization
 ```python
 TIME_ZONE = 'Asia/Kolkata'  # Indian Standard Time
+LANGUAGE_CODE = 'en-us'
+USE_I18N = True
 USE_TZ = True
 ```
 
-### .env File (heartfl/.env)
+### Environment Variables (.env)
+
+Create a `.env` file in the `heartfl/` directory:
 
 ```env
-# Django
+# Django Core
 DEBUG=True
-DJANGO_SECRET_KEY=change-this-to-random-key-in-production
+DJANGO_SECRET_KEY=your-secret-key-here-change-in-production
 
-# Email Setup
-EMAIL_BACKEND=console  # Set to 'smtp' for production
-EMAIL_HOST_USER=your-email@gmail.com
-EMAIL_HOST_PASSWORD=your-16-char-app-password
+# Email Configuration (Optional)
+EMAIL_BACKEND=console  # Use 'smtp' for production
+EMAIL_HOST_USER=your-email@example.com
+EMAIL_HOST_PASSWORD=your-app-specific-password
 
+# Database (SQLite3 - No configuration needed)
+# The database file will be created automatically
+```
+
+### Static Files Collection
+
+For production deployment:
+
+```bash
+# Collect all static files to STATIC_ROOT
+python manage.py collectstatic --noinput
+
+# This copies files from:
+# - static/ directories in each app
+# - STATICFILES_DIRS paths
+# To: staticfiles/ directory
 ```
 
 ---
@@ -741,7 +839,7 @@ Accent: #74C69D (Green)
 
 ### Project Commands
 
-```powershell
+```bash
 # Migrations
 python manage.py makemigrations          # Create migrations
 python manage.py migrate                 # Apply migrations
@@ -776,16 +874,8 @@ python manage.py runserver 0.0.0.0:8000  # Allow external connections
    ```
 
 2. **Create Migration**
-   ```powershell
+   ```bash
    python manage.py makemigrations
-   ```
-
-3. **Review Migration** (`migrations/0001_initial.py`)
-   - Verify changes
-   - Add auto_now_add if needed
-
-4. **Apply Migration**
-   ```powershell
    python manage.py migrate
    ```
 
@@ -835,12 +925,16 @@ python manage.py runserver 0.0.0.0:8000  # Allow external connections
 **Error:** `ModuleNotFoundError: No module named 'django'`
 
 **Solution:**
-```powershell
-# Activate venv
-.\venv\Scripts\Activate.ps1
+```bash
+# Activate virtual environment
+# Linux/macOS:
+source venv/bin/activate
 
-# Install Django
-pip install django==5.2.11
+# Windows:
+venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
 ```
 
 ### Problem: Database locked
@@ -848,10 +942,11 @@ pip install django==5.2.11
 **Error:** `sqlite3.OperationalError: database is locked`
 
 **Solution:**
-```powershell
-# Restart server (Ctrl+C)
-# Delete db.sqlite3 and migrate again
-rm db.sqlite3
+```bash
+# Stop the server (Ctrl+C)
+# Close all database connections
+# If issue persists, backup and recreate:
+mv db.sqlite3 db.sqlite3.backup
 python manage.py migrate
 ```
 
@@ -860,10 +955,11 @@ python manage.py migrate
 **Error:** 404 errors on `/static/`
 
 **Solution:**
-```powershell
+```bash
 # Collect static files
 python manage.py collectstatic --noinput
 
+# Ensure DEBUG=True in development
 # Clear browser cache (Ctrl+Shift+Del)
 ```
 
@@ -877,7 +973,7 @@ python manage.py collectstatic --noinput
    - Enable 2-Step Verification
    - Generate App Password at https://myaccount.google.com/apppasswords
    - Use 16-char password in `.env`
-3. Or set `EMAIL_BACKEND=console` to test locally
+3. Or set `EMAIL_BACKEND=console` to test locally (prints to terminal)
 
 ### Problem: Login redirects to wrong page
 
@@ -897,6 +993,23 @@ LOGIN_REDIRECT_URL = 'core:home'  # Must be URL name, not path
 1. Ensure user has linked `Hospital` record
 2. Create via `/accounts/register/hospital/`
 3. Or via Admin: http://127.0.0.1:8080/admin/hospitals/hospital/
+
+### Problem: ImportError or module issues
+
+**Error:** Various import errors
+
+**Solution:**
+```bash
+# Ensure all dependencies are installed
+pip install -r requirements.txt
+
+# Check Python version (requires 3.12+)
+python --version
+
+# Clear Python cache
+find . -type d -name "__pycache__" -exec rm -rf {} +
+find . -type f -name "*.pyc" -delete
+```
 
 ---
 
@@ -969,21 +1082,23 @@ This project is part of an educational initiative for heart disease prediction u
 
 ---
 
-## 👥 Contributors & Team (Developers)
+## 👥 Contributors & Development Team
 
-- **Project Team:** 
-> [Indana Aditya](https://github.com/22MH1A42G1/)
+### Core Developers
 
-> [Pulagam Suresh Reddy](https://github.com/sureshreddy777)
+| Developer | GitHub | Role |
+|-----------|--------|------|
+| **Indana Aditya** | [@22MH1A42G1](https://github.com/22MH1A42G1/) | Lead Developer & Project Manager |
+| **Pulagam Suresh Reddy** | [@sureshreddy777](https://github.com/sureshreddy777) | Backend Developer & Database Design |
+| **Mundru Jnanadeep** | [@jnanadeep-2003](https://github.com/jnanadeep-2003) | ML Engineer & Algorithm Implementation |
+| **Penubothu Hemanth Kumar** | [@HemanthKumarPenubothu](https://github.com/HemanthKumarPenubothu) | Frontend Developer & UI/UX Design |
 
-> [Mundru Jnanadeep](https://github.com/jnanadeep-2003)
+### Institution
 
-> [Penubothu Hemanth Kumar](https://github.com/HemanthKumarPenubothu)
-- **Institution:** ADITYA COLLEGE OF ENGINEERING AND TECHNOLOGY
-- **Department:** Computer Science & Engineering - Artifical Intelligence Machine Leaning
-- **Date Created:** 2025
-- **Last Updated:** February 20, 2026
-
+**ADITYA COLLEGE OF ENGINEERING AND TECHNOLOGY**  
+Department: Computer Science & Engineering - Artificial Intelligence & Machine Learning  
+Project Year: 2025  
+Last Updated: February 26, 2026
 
 ---
 
@@ -992,9 +1107,10 @@ This project is part of an educational initiative for heart disease prediction u
 For issues, questions, or contributions:
 
 - 📧 **Email:** admin@heartfl.local
+- 🐛 **GitHub Issues:** [Report Bug](https://github.com/22MH1A42G1/HeartFL-Django/issues)
+- 💬 **Discussions:** [GitHub Discussions](https://github.com/22MH1A42G1/HeartFL-Django/discussions)
 - 📝 **Contact Form:** http://127.0.0.1:8080/contact/
-- 🐛 **Bug Reports:** Via admin contact message system
-- 💬 **Feature Requests:** Submit via contact form
+- 🌟 **Star the Repo:** [GitHub Repository](https://github.com/22MH1A42G1/HeartFL-Django)
 
 ---
 
@@ -1039,21 +1155,44 @@ For issues, questions, or contributions:
 
 ---
 
-## 📊 System Statistics (Current)
+## 📊 Project Statistics
 
-- **Total Models:** 8 (User, UserProfile, Hospital, Doctor, HospitalDataset, PatientData, PredictionResult, ContactMessage)
-- **Total URLs:** 40+
-- **Total Templates:** 20+
-- **CSS Files:** 4 (theme.css, style.css, animations.css, admin_custom.css)
-- **JavaScript Files:** 2 (forms.js, theme.js)
-- **Static Assets:** GIF background + Icons
-- **Database Size:** ~5MB (SQLite3)
-- **Python Version:** 3.13.7
-- **Django Version:** 5.2.11
-- **Bootstrap Version:** 5.3.0
+| Metric | Value |
+|--------|-------|
+| **Total Django Apps** | 5 (accounts, core, hospitals, prediction, federated) |
+| **Database Models** | 8 (User, UserProfile, Hospital, Doctor, etc.) |
+| **API Endpoints** | 40+ routes |
+| **HTML Templates** | 20+ responsive pages |
+| **CSS Files** | 4 (theme, style, animations, admin) |
+| **JavaScript Files** | 3 (forms, theme, validations) |
+| **Static Assets** | Images, GIFs, Icons |
+| **Database** | SQLite3 (~5MB) |
+| **Python Version** | 3.12+ |
+| **Django Version** | 5.2.11 |
+| **Bootstrap Version** | 5.3 |
 
 ---
 
-**Happy Coding! 🚀**
+## 🙏 Acknowledgments
+
+- **Django Software Foundation** - For the excellent web framework
+- **scikit-learn Team** - For powerful ML tools
+- **Bootstrap Team** - For responsive UI components
+- **GitHub** - For hosting and collaboration tools
+- **ADITYA College** - For project support and guidance
+- **Open Source Community** - For inspiration and resources
+
+---
+
+<div align="center">
+
+**Made with ❤️ for advancing healthcare through federated learning**
+
+[![GitHub stars](https://img.shields.io/github/stars/22MH1A42G1/HeartFL-Django?style=social)](https://github.com/22MH1A42G1/HeartFL-Django/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/22MH1A42G1/HeartFL-Django?style=social)](https://github.com/22MH1A42G1/HeartFL-Django/network/members)
+
+⭐ **Star this repository if you find it helpful!** ⭐
+
+</div>
 
 *Last Updated: February 20, 2026*
