@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theme Test - Light Blue & Dark Green</title>
+    <link rel="stylesheet" href="static/css/theme.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            padding: 40px;
+            font-family: Arial, sans-serif;
+        }
+        .demo-box {
+            padding: 30px;
+            margin: 20px 0;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            background-color: var(--card-bg);
+        }
+        .color-swatch {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+        }
+        .toggle-btn {
+            padding: 12px 24px;
+            font-size: 16px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 20px 0;
+        }
+        .toggle-btn:hover {
+            background-color: var(--primary-dark);
+        }
+    </style>
+</head>
+<body>
+    <h1>🎨 Theme Test: Light Blue & Dark Green</h1>
+    
+    <button class="toggle-btn" onclick="toggleTheme()">
+        <i class="bi bi-moon-stars-fill" id="icon"></i> 
+        Toggle Theme (Current: <span id="current-theme">Light Blue</span>)
+    </button>
+    
+    <div class="demo-box">
+        <h2>Current Theme Colors</h2>
+        <div>
+            <div class="color-swatch" style="background-color: var(--background-color); color: var(--text-color);">
+                Background: var(--background-color)
+            </div>
+            <div class="color-swatch" style="background-color: var(--card-bg); color: var(--text-color);">
+                Card BG: var(--card-bg)
+            </div>
+            <div class="color-swatch" style="background-color: var(--navbar-bg); color: var(--text-color);">
+                Navbar BG: var(--navbar-bg)
+            </div>
+        </div>
+        <div style="margin-top: 15px;">
+            <div class="color-swatch" style="background-color: var(--primary-color); color: white;">
+                Primary: var(--primary-color)
+            </div>
+            <div class="color-swatch" style="background-color: var(--success-color); color: white;">
+                Success: var(--success-color)
+            </div>
+            <div class="color-swatch" style="background-color: var(--danger-color); color: white;">
+                Danger: var(--danger-color)
+            </div>
+        </div>
+    </div>
+    
+    <div class="demo-box">
+        <h2 style="color: var(--text-color);">Text Sample</h2>
+        <p style="color: var(--text-color);">
+            This is primary text with color: var(--text-color)
+        </p>
+        <p style="color: var(--text-secondary);">
+            This is secondary text with color: var(--text-secondary)
+        </p>
+        <p style="color: var(--text-tertiary);">
+            This is tertiary text with color: var(--text-tertiary)
+        </p>
+    </div>
+    
+    <div class="demo-box">
+        <h2>Theme Information</h2>
+        <p><strong>Light Mode:</strong> Light Blue background (#E3F2FD) with dark blue text</p>
+        <p><strong>Dark Mode:</strong> Dark Green background (#1B4332) with light green text</p>
+    </div>
+
+    <script>
+        const html = document.documentElement;
+        const icon = document.getElementById('icon');
+        const currentThemeText = document.getElementById('current-theme');
+        
+        function toggleTheme() {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            html.setAttribute('data-theme', newTheme);
+            
+            if (newTheme === 'dark') {
+                icon.className = 'bi bi-sun-fill';
+                currentThemeText.textContent = 'Dark Green';
+            } else {
+                icon.className = 'bi bi-moon-stars-fill';
+                currentThemeText.textContent = 'Light Blue';
+            }
+        }
+    </script>
+</body>
+</html>
