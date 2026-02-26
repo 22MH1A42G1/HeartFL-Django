@@ -1088,8 +1088,8 @@ This project is part of an educational initiative for heart disease prediction u
 
 | Developer | GitHub | Role |
 |-----------|--------|------|
-| **Indana Aditya** | [@22MH1A42G1](https://github.com/22MH1A42G1/) | Lead Developer & Project Manager |
-| **Pulagam Suresh Reddy** | [@sureshreddy777](https://github.com/sureshreddy777) | Backend Developer & Database Design |
+| **Indana Aditya** | [@22MH1A42G1](https://github.com/22MH1A42G1/) | Backend Developer & Database Design |
+| **Pulagam Suresh Reddy** | [@sureshreddy777](https://github.com/sureshreddy777) | Lead Developer & Project Manager |
 | **Mundru Jnanadeep** | [@jnanadeep-2003](https://github.com/jnanadeep-2003) | ML Engineer & Algorithm Implementation |
 | **Penubothu Hemanth Kumar** | [@HemanthKumarPenubothu](https://github.com/HemanthKumarPenubothu) | Frontend Developer & UI/UX Design |
 
