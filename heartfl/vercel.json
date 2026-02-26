@@ -1,0 +1,47 @@
+{
+  "buildCommand": "pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput",
+  "devCommand": "python manage.py runserver 0.0.0.0:3000",
+  "installCommand": "pip install --upgrade pip && pip install -r requirements.txt",
+  "framework": "django",
+  "python": {
+    "version": "3.12"
+  },
+  "env": {
+    "PYTHONUNBUFFERED": "1",
+    "DJANGO_SETTINGS_MODULE": "heartfl.settings"
+  },
+  "regions": ["iad1"],
+  "functions": {
+    "heartfl/wsgi.py": {
+      "maxDuration": 60,
+      "memory": 3008,
+      "runtime": "python3.12"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/heartfl/wsgi.py"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/static/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/media/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400"
+        }
+      ]
+    }
+  ]
+}
