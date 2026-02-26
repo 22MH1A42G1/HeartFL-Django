@@ -391,7 +391,7 @@ Last Updated: February 26, 2026
 
 For issues, questions, or contributions:
 
-- 📧 **Email:** admin@heartfl.local
+- 📧 **Email:** [admin@heartfl.local](mailto:adityaindana@gmail.com)
 - 🐛 **Issues:** [GitHub Issues](https://github.com/22MH1A42G1/HeartFL-Django/issues)
 - 📝 **Contact Form:** http://127.0.0.1:8080/contact/
 
