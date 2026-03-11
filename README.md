@@ -380,7 +380,7 @@ This project is part of an educational initiative for heart disease prediction u
 
 ### Institution
 
-**ADITYA COLLEGE OF ENGINEERING AND TECHNOLOGY**  
+**[ADITYA COLLEGE OF ENGINEERING AND TECHNOLOGY](https://acet.ac.in/)**  
 Department: Computer Science & Engineering - AI & Machine Learning  
 Date Created: 2025  
 Last Updated: February 26, 2026
