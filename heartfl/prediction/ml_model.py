@@ -68,9 +68,9 @@ class HeartDiseasePredictor:
 
                 prediction = self.model.predict(features)[0]
                 probability = self.model.predict_proba(features)[0]
-                
-                # Get probability for positive class (heart disease)
-                prob_percentage = probability[1] * 100
+
+                # Use predicted-class confidence instead of a hardcoded class index.
+                prob_percentage = self._get_predicted_class_probability(prediction, probability)
                 
                 result = 'High Risk' if prediction == 1 else 'Low Risk'
                 return result, float(prob_percentage)
@@ -229,6 +229,19 @@ class HeartDiseasePredictor:
             patient_data.st_slope
         ]
         return np.array(features).reshape(1, -1)
+
+    def _get_predicted_class_probability(self, prediction, probability_row):
+        """Return probability (%) for the predicted class using model classes mapping."""
+        classes = list(getattr(self.model, 'classes_', []))
+        if classes:
+            try:
+                predicted_index = classes.index(prediction)
+                return float(probability_row[predicted_index] * 100)
+            except ValueError:
+                pass
+
+        # Fallback for uncommon estimators where classes_ mapping is unavailable.
+        return float(np.max(probability_row) * 100)
     
     def predict(self, patient_data):
         """
@@ -248,9 +261,8 @@ class HeartDiseasePredictor:
                 # Use actual model prediction
                 prediction = self.model.predict(features_scaled)[0]
                 probability = self.model.predict_proba(features_scaled)[0]
-                
-                # Get probability for positive class (heart disease)
-                prob_percentage = probability[1] * 100
+
+                prob_percentage = self._get_predicted_class_probability(prediction, probability)
                 
                 result = 'high' if prediction == 1 else 'low'
                 return result, float(prob_percentage)

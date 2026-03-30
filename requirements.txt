@@ -34,6 +34,10 @@ scikit-learn>=1.3.0
 # PDF Report Generation
 reportlab>=4.0.0
 
+# OCR and PDF text extraction
+pytesseract>=0.3.10
+PyMuPDF>=1.24.0
+
 # Image Processing (for report assets)
 Pillow>=10.0.0
 

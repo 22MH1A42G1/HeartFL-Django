@@ -1,229 +1,413 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="fade-in-up">
-    {% if prediction_result %}
-        <!-- Prediction Result -->
-        <div class="glass-card mb-4">
-            <h2 class="text-center fw-bold mb-4">
-                <i class="bi bi-clipboard-check-fill text-success"></i> Prediction Result
-            </h2>
-            
-            <div class="row">
-                <div class="col-md-6">
-                    <h5 class="fw-bold mb-3">Patient Information</h5>
-                    <table class="table table-sm">
-                        <tr>
-                            <th>Name:</th>
-                            <td>{{ prediction_result.patient_data.patient_name }}</td>
-                        </tr>
-                        <tr>
-                            <th>Age:</th>
-                            <td>{{ prediction_result.patient_data.age }} years</td>
-                        </tr>
-                        <tr>
-                            <th>Gender:</th>
-                            <td>{{ prediction_result.patient_data.get_gender_display }}</td>
-                        </tr>
-                        <tr>
-                            <th>Chest Pain Type:</th>
-                            <td>Type {{ prediction_result.patient_data.chest_pain_type }}</td>
-                        </tr>
-                        <tr>
-                            <th>Resting BP:</th>
-                            <td>{{ prediction_result.patient_data.resting_bp }} mm Hg</td>
-                        </tr>
-                        <tr>
-                            <th>Max Heart Rate:</th>
-                            <td>{{ prediction_result.patient_data.max_heart_rate }}</td>
-                        </tr>
-                    </table>
+<div class="container py-4 fade-in-up">
+    {% csrf_token %}
+
+    <div class="row justify-content-center mb-4">
+        <div class="col-lg-10">
+            <div class="glass-card p-4">
+                <h2 class="text-center fw-bold mb-1">
+                    <i class="bi bi-heart-pulse-fill text-danger"></i> Heart Disease Prediction
+                </h2>
+                <p class="text-center text-muted mb-0">Upload a medical PDF, auto-extract clinical values, then predict risk.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+        <div class="col-lg-10">
+            <div class="glass-card p-4 h-100">
+                <h5 class="fw-bold mb-3 text-primary"><i class="bi bi-file-earmark-pdf-fill"></i> Section 1: Upload PDF</h5>
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-8">
+                        <label for="pdfFile" class="form-label fw-semibold">Medical Report (PDF only)</label>
+                        <input class="form-control" type="file" id="pdfFile" accept="application/pdf,.pdf">
+                    </div>
+                    <div class="col-md-4 d-grid">
+                        <button class="btn btn-primary" id="extractBtn" type="button">
+                            <i class="bi bi-cloud-upload"></i> Upload &amp; Extract Data
+                        </button>
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="text-center">
-                        {% if prediction_result.prediction == 'high' %}
-                            <div class="display-1 text-danger mb-2">
-                                <i class="bi bi-exclamation-triangle-fill"></i>
-                            </div>
-                            <h3 class="fw-bold text-danger">HIGH RISK</h3>
-                        {% else %}
-                            <div class="display-1 text-success mb-2">
-                                <i class="bi bi-check-circle-fill"></i>
-                            </div>
-                            <h3 class="fw-bold text-success">LOW RISK</h3>
-                        {% endif %}
-                        
-                        <div class="mt-3">
-                            <div class="progress" style="height: 30px;">
-                                <div class="progress-bar {% if prediction_result.prediction == 'high' %}bg-danger{% else %}bg-success{% endif %}" 
-                                     role="progressbar" 
-                                     style="width: {{ prediction_result.confidence_score }}%;">
-                                    <strong>{{ prediction_result.confidence_score|floatformat:2 }}%</strong>
-                                </div>
-                            </div>
-                            <p class="text-muted mt-2">Confidence Score</p>
+                <div class="d-flex align-items-center mt-3 d-none" id="extractSpinnerWrap">
+                    <div class="spinner-border text-primary me-2" role="status" aria-hidden="true"></div>
+                    <span class="text-muted">Extracting report data...</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-10">
+            <div class="glass-card p-4 h-100">
+                <h5 class="fw-bold mb-3 text-success"><i class="bi bi-clipboard2-pulse-fill"></i> Section 2: Patient Clinical Data Form</h5>
+                <form id="predictionForm" novalidate>
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label for="patient_name" class="form-label">Patient Name</label>
+                            <input type="text" class="form-control" id="patient_name" placeholder="Enter patient name">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="age" class="form-label">Age</label>
+                            <input type="number" class="form-control" id="age" min="1" max="120" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="sex" class="form-label">Sex</label>
+                            <select id="sex" class="form-select" required>
+                                <option value="">Select</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="chest_pain_type" class="form-label">Chest Pain Type</label>
+                            <select id="chest_pain_type" class="form-select" required>
+                                <option value="">Select</option>
+                                <option value="0">Typical Angina</option>
+                                <option value="1">Atypical Angina</option>
+                                <option value="2">Non-anginal Pain</option>
+                                <option value="3">Asymptomatic</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="resting_bp" class="form-label">Resting Blood Pressure</label>
+                            <input type="number" class="form-control" id="resting_bp" min="50" max="250" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="cholesterol" class="form-label">Cholesterol</label>
+                            <input type="number" class="form-control" id="cholesterol" min="100" max="600" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="fasting_bs" class="form-label">Fasting Blood Sugar</label>
+                            <select id="fasting_bs" class="form-select" required>
+                                <option value="">Select</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="resting_ecg" class="form-label">Rest ECG</label>
+                            <select id="resting_ecg" class="form-select" required>
+                                <option value="">Select</option>
+                                <option value="0">Normal</option>
+                                <option value="1">ST-T wave abnormality</option>
+                                <option value="2">Left ventricular hypertrophy</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="max_heart_rate" class="form-label">Max Heart Rate</label>
+                            <input type="number" class="form-control" id="max_heart_rate" min="60" max="220" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="exercise_angina" class="form-label">Exercise Induced Angina</label>
+                            <select id="exercise_angina" class="form-select" required>
+                                <option value="">Select</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="oldpeak" class="form-label">Oldpeak</label>
+                            <input type="number" class="form-control" id="oldpeak" step="any" inputmode="decimal" min="0" max="10" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="st_slope" class="form-label">ST Slope</label>
+                            <select id="st_slope" class="form-select" required>
+                                <option value="">Select</option>
+                                <option value="0">Upsloping</option>
+                                <option value="1">Flat</option>
+                                <option value="2">Downsloping</option>
+                            </select>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <div class="alert {% if prediction_result.prediction == 'high' %}alert-danger{% else %}alert-success{% endif %} mt-4">
-                <h5 class="fw-bold">
-                    <i class="bi bi-info-circle-fill"></i> Recommendation
-                </h5>
-                {% if prediction_result.prediction == 1 %}
-                    <p class="mb-0">
-                        The patient shows indicators of <strong>high heart disease risk</strong>. 
-                        Immediate medical consultation and further diagnostic tests are recommended. 
-                        Consider lifestyle modifications and potential medical intervention.
-                    </p>
-                {% else %}
-                    <p class="mb-0">
-                        The patient shows <strong>low indicators of heart disease risk</strong>. 
-                        Continue with regular health checkups and maintain a healthy lifestyle. 
-                        Monitor cardiovascular health periodically.
-                    </p>
-                {% endif %}
-            </div>
-
-            <div class="d-grid gap-2 mt-4">
-                <a href="{% url 'prediction:download_report' prediction_result.id %}" class="btn btn-success btn-lg">
-                    <i class="bi bi-file-earmark-pdf-fill"></i> Download PDF Report
-                </a>
-                <a href="{% url 'prediction:predict' %}" class="btn btn-primary btn-lg">
-                    <i class="bi bi-plus-circle"></i> New Prediction
-                </a>
-                <a href="{% url 'prediction:history' %}" class="btn btn-outline-secondary">
-                    <i class="bi bi-clock-history"></i> View History
-                </a>
+                    <h5 class="fw-bold mt-4 mb-3 text-danger"><i class="bi bi-lightning-charge-fill"></i> Section 3: Actions</h5>
+                    <div class="d-flex flex-column flex-md-row gap-2">
+                        <button id="predictBtn" class="btn btn-danger" type="button">
+                            <i class="bi bi-graph-up-arrow"></i> Predict
+                        </button>
+                        <button id="resetBtn" class="btn btn-outline-secondary" type="button">
+                            <i class="bi bi-arrow-clockwise"></i> Reset
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
-    {% else %}
-        <!-- Prediction Form -->
-        <div class="glass-card mb-4">
-            <h2 class="text-center fw-bold mb-4">
-                <i class="bi bi-heart-pulse-fill text-danger"></i> Heart Disease Prediction
-            </h2>
-            <p class="text-center text-muted mb-4">Enter patient health data for risk assessment</p>
 
-            <form method="post">
-                {% csrf_token %}
-                
-                <h5 class="fw-bold mb-3 text-primary">
-                    <i class="bi bi-person-fill"></i> Patient Information
-                </h5>
-                
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label fw-bold">{{ form.patient_name.label }}</label>
-                        {{ form.patient_name }}
-                        {% if form.patient_name.errors %}<small class="text-danger">{{ form.patient_name.errors }}</small>{% endif %}
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label fw-bold">Age (years)</label>
-                        {{ form.age }}
-                        {% if form.age.errors %}<small class="text-danger">{{ form.age.errors }}</small>{% endif %}
-                    </div>
+        <div class="col-lg-10">
+            <div class="glass-card p-4" id="resultCard">
+                <h5 class="fw-bold mb-3"><i class="bi bi-activity"></i> Section 4: Result Display</h5>
+                <div class="alert alert-light mb-0" id="resultPlaceholder">
+                    Prediction result will appear here after clicking Predict.
                 </div>
 
-                <div class="row mb-3">
+                <div class="row g-3 d-none" id="resultContent">
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">Gender</label>
-                        {{ form.gender }}
-                        {% if form.gender.errors %}<small class="text-danger">{{ form.gender.errors }}</small>{% endif %}
-                    </div>
-                </div>
-
-                <hr class="my-4">
-
-                <h5 class="fw-bold mb-3 text-success">
-                    <i class="bi bi-activity"></i> Clinical Measurements
-                </h5>
-
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label fw-bold">{{ form.chest_pain_type.label }}</label>
-                        {{ form.chest_pain_type }}
-                        {% if form.chest_pain_type.errors %}<small class="text-danger">{{ form.chest_pain_type.errors }}</small>{% endif %}
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label fw-bold">{{ form.resting_bp.label }}</label>
-                        {{ form.resting_bp }}
-                        {% if form.resting_bp.errors %}<small class="text-danger">{{ form.resting_bp.errors }}</small>{% endif %}
-                    </div>
-                </div>
-
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label fw-bold">{{ form.cholesterol.label }}</label>
-                        {{ form.cholesterol }}
-                        {% if form.cholesterol.errors %}<small class="text-danger">{{ form.cholesterol.errors }}</small>{% endif %}
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label fw-bold">{{ form.max_heart_rate.label }}</label>
-                        {{ form.max_heart_rate }}
-                        {% if form.max_heart_rate.errors %}<small class="text-danger">{{ form.max_heart_rate.errors }}</small>{% endif %}
-                    </div>
-                </div>
-
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label fw-bold">{{ form.resting_ecg.label }}</label>
-                        {{ form.resting_ecg }}
-                        {% if form.resting_ecg.errors %}<small class="text-danger">{{ form.resting_ecg.errors }}</small>{% endif %}
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label fw-bold">{{ form.st_slope.label }}</label>
-                        {{ form.st_slope }}
-                        {% if form.st_slope.errors %}<small class="text-danger">{{ form.st_slope.errors }}</small>{% endif %}
-                    </div>
-                </div>
-
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label fw-bold">{{ form.oldpeak.label }}</label>
-                        {{ form.oldpeak }}
-                        {% if form.oldpeak.errors %}<small class="text-danger">{{ form.oldpeak.errors }}</small>{% endif %}
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mt-4">
-                            <div class="form-check">
-                                {{ form.fasting_bs }}
-                                <label class="form-check-label fw-bold" for="id_fasting_bs">
-                                    {{ form.fasting_bs.label }}
-                                </label>
-                            </div>
-                            <div class="form-check mt-2">
-                                {{ form.exercise_angina }}
-                                <label class="form-check-label fw-bold" for="id_exercise_angina">
-                                    {{ form.exercise_angina.label }}
-                                </label>
-                            </div>
+                        <div class="border rounded p-3 h-100">
+                            <div class="text-muted small">Risk Level</div>
+                            <div class="h4 mb-0 fw-bold" id="riskLevelText">-</div>
                         </div>
                     </div>
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <div class="text-muted small">Probability</div>
+                            <div class="h4 mb-0 fw-bold" id="probabilityText">-</div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="progress" style="height: 22px;">
+                            <div id="riskProgressBar" class="progress-bar" role="progressbar" style="width: 0%;">0%</div>
+                        </div>
+                    </div>
+                    <div class="col-12 d-grid d-md-flex gap-2">
+                        <button id="downloadReportBtn" class="btn btn-success d-none" type="button" data-report-url="">
+                            <i class="bi bi-file-earmark-pdf-fill"></i> Download Prediction Report
+                        </button>
+                        <a class="btn btn-outline-secondary" href="{% url 'prediction:history' %}">
+                            <i class="bi bi-clock-history"></i> View History
+                        </a>
+                    </div>
                 </div>
-
-                <div class="d-grid gap-2 mt-4">
-                    <button type="submit" class="btn btn-danger btn-lg btn-glow">
-                        <i class="bi bi-graph-up"></i> Predict Heart Disease Risk
-                    </button>
-                </div>
-            </form>
+            </div>
         </div>
+    </div>
 
-        <div class="glass-card">
-            <h5 class="fw-bold mb-3">
-                <i class="bi bi-info-circle-fill text-info"></i> About This Prediction
-            </h5>
-            <p class="mb-2">
-                This prediction uses a machine learning model trained using <strong>Federated Learning</strong> 
-                across multiple hospitals. The model analyzes patient health parameters to assess heart disease risk.
-            </p>
-            <p class="mb-0">
-                <strong>Note:</strong> This is a screening tool. Always consult with healthcare professionals 
-                for proper diagnosis and treatment.
-            </p>
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1080;">
+        <div id="statusToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="toastMessage">Data extracted successfully.</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
         </div>
-    {% endif %}
+    </div>
 </div>
+
+<script>
+(function () {
+    const uploadUrl = "{% url 'prediction:upload_pdf_extract' %}";
+    const predictUrl = "{% url 'prediction:predict_ajax' %}";
+    const downloadUrlTemplate = "{% url 'prediction:download_report' 0 %}";
+    const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+
+    const pdfFileInput = document.getElementById('pdfFile');
+    const extractBtn = document.getElementById('extractBtn');
+    const extractSpinnerWrap = document.getElementById('extractSpinnerWrap');
+    const predictionForm = document.getElementById('predictionForm');
+    const predictBtn = document.getElementById('predictBtn');
+    const resetBtn = document.getElementById('resetBtn');
+
+    const resultPlaceholder = document.getElementById('resultPlaceholder');
+    const resultContent = document.getElementById('resultContent');
+    const riskLevelText = document.getElementById('riskLevelText');
+    const probabilityText = document.getElementById('probabilityText');
+    const riskProgressBar = document.getElementById('riskProgressBar');
+    const downloadReportBtn = document.getElementById('downloadReportBtn');
+
+    const toastElement = document.getElementById('statusToast');
+    const toastMessage = document.getElementById('toastMessage');
+
+    const formFields = {
+        patient_name: document.getElementById('patient_name'),
+        age: document.getElementById('age'),
+        sex: document.getElementById('sex'),
+        chest_pain_type: document.getElementById('chest_pain_type'),
+        resting_bp: document.getElementById('resting_bp'),
+        cholesterol: document.getElementById('cholesterol'),
+        fasting_bs: document.getElementById('fasting_bs'),
+        resting_ecg: document.getElementById('resting_ecg'),
+        max_heart_rate: document.getElementById('max_heart_rate'),
+        exercise_angina: document.getElementById('exercise_angina'),
+        oldpeak: document.getElementById('oldpeak'),
+        st_slope: document.getElementById('st_slope')
+    };
+
+    function showToast(message, isError) {
+        toastMessage.textContent = message;
+        toastElement.classList.toggle('text-bg-danger', Boolean(isError));
+        toastElement.classList.toggle('text-bg-success', !isError);
+        if (window.bootstrap && bootstrap.Toast) {
+            bootstrap.Toast.getOrCreateInstance(toastElement).show();
+        } else {
+            alert(message);
+        }
+    }
+
+    function fillClinicalForm(data) {
+        Object.keys(formFields).forEach((key) => {
+            if (data[key] !== null && data[key] !== undefined && data[key] !== '') {
+                formFields[key].value = String(data[key]);
+            }
+        });
+    }
+
+    function collectPayload() {
+        const normalizedOldpeak = String(formFields.oldpeak.value).trim().replace(',', '.');
+        return {
+            patient_name: formFields.patient_name.value,
+            age: formFields.age.value,
+            sex: formFields.sex.value,
+            chest_pain_type: formFields.chest_pain_type.value,
+            resting_bp: formFields.resting_bp.value,
+            cholesterol: formFields.cholesterol.value,
+            fasting_bs: formFields.fasting_bs.value,
+            resting_ecg: formFields.resting_ecg.value,
+            max_heart_rate: formFields.max_heart_rate.value,
+            exercise_angina: formFields.exercise_angina.value,
+            oldpeak: normalizedOldpeak,
+            st_slope: formFields.st_slope.value
+        };
+    }
+
+    function allRequiredFieldsPresent(payload) {
+        const requiredKeys = [
+            'age', 'sex', 'chest_pain_type', 'resting_bp', 'cholesterol',
+            'fasting_bs', 'resting_ecg', 'max_heart_rate', 'exercise_angina',
+            'oldpeak', 'st_slope'
+        ];
+        return requiredKeys.every((key) => payload[key] !== null && payload[key] !== undefined && String(payload[key]).trim() !== '');
+    }
+
+    function buildDownloadUrl(reportUrl, predictionId) {
+        if (reportUrl && String(reportUrl).trim() !== '' && reportUrl !== '#') {
+            return reportUrl;
+        }
+        if (predictionId !== null && predictionId !== undefined && String(predictionId).trim() !== '') {
+            return downloadUrlTemplate.replace('/0/', `/${predictionId}/`);
+        }
+        return '';
+    }
+
+    function renderResult(probabilityPercent, backendPrediction, reportUrl, predictionId) {
+        let riskLabel = 'Low';
+        let barClass = 'bg-success';
+
+        if (backendPrediction === 'High Risk') {
+            riskLabel = 'High';
+            barClass = 'bg-danger';
+        } else if (probabilityPercent >= 40 && probabilityPercent < 70) {
+            riskLabel = 'Medium';
+            barClass = 'bg-warning';
+        }
+
+        resultPlaceholder.classList.add('d-none');
+        resultContent.classList.remove('d-none');
+        riskLevelText.textContent = riskLabel;
+        riskLevelText.className = `h4 mb-0 fw-bold text-${barClass.replace('bg-', '')}`;
+
+        const safeProbability = Math.max(0, Math.min(100, Number(probabilityPercent) || 0));
+        probabilityText.textContent = `${safeProbability.toFixed(2)}%`;
+        riskProgressBar.style.width = `${safeProbability}%`;
+        riskProgressBar.textContent = `${safeProbability.toFixed(2)}%`;
+        riskProgressBar.className = `progress-bar ${barClass}`;
+
+        const finalReportUrl = buildDownloadUrl(reportUrl, predictionId);
+        if (finalReportUrl) {
+            downloadReportBtn.dataset.reportUrl = finalReportUrl;
+            downloadReportBtn.classList.remove('d-none');
+        } else {
+            downloadReportBtn.classList.add('d-none');
+            downloadReportBtn.dataset.reportUrl = '';
+        }
+    }
+
+    extractBtn.addEventListener('click', async function () {
+        const file = pdfFileInput.files[0];
+        if (!file) {
+            showToast('Please choose a PDF file first.', true);
+            return;
+        }
+        if (!file.name.toLowerCase().endsWith('.pdf')) {
+            showToast('Invalid file. Please upload a PDF.', true);
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('pdf_file', file);
+
+        extractSpinnerWrap.classList.remove('d-none');
+        extractBtn.disabled = true;
+
+        try {
+            const response = await fetch(uploadUrl, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken
+                },
+                body: formData
+            });
+
+            const result = await response.json();
+            if (!response.ok) {
+                throw new Error(result.error || 'Unable to process PDF.');
+            }
+
+            fillClinicalForm(result.data || {});
+            showToast('Data extracted successfully', false);
+        } catch (error) {
+            showToast(error.message || 'PDF extraction failed.', true);
+        } finally {
+            extractSpinnerWrap.classList.add('d-none');
+            extractBtn.disabled = false;
+        }
+    });
+
+    predictBtn.addEventListener('click', async function () {
+        const payload = collectPayload();
+        if (!allRequiredFieldsPresent(payload)) {
+            showToast('Please fill all clinical fields before prediction.', true);
+            return;
+        }
+
+        predictBtn.disabled = true;
+        predictBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Predicting...';
+
+        try {
+            const response = await fetch(predictUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify(payload)
+            });
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.error || 'Prediction failed.');
+            }
+
+            renderResult(result.probability_percent, result.prediction, result.report_url, result.prediction_id);
+            showToast('Prediction completed successfully.', false);
+        } catch (error) {
+            showToast(error.message || 'Prediction failed.', true);
+        } finally {
+            predictBtn.disabled = false;
+            predictBtn.innerHTML = '<i class="bi bi-graph-up-arrow"></i> Predict';
+        }
+    });
+
+    resetBtn.addEventListener('click', function () {
+        predictionForm.reset();
+        resultContent.classList.add('d-none');
+        resultPlaceholder.classList.remove('d-none');
+        riskProgressBar.style.width = '0%';
+        riskProgressBar.textContent = '0%';
+        downloadReportBtn.classList.add('d-none');
+        downloadReportBtn.dataset.reportUrl = '';
+    });
+
+    downloadReportBtn.addEventListener('click', function (event) {
+        const reportUrl = downloadReportBtn.dataset.reportUrl;
+        if (!reportUrl) {
+            event.preventDefault();
+            showToast('Report is not ready yet. Please run prediction first.', true);
+            return;
+        }
+
+        window.location.assign(reportUrl);
+    });
+})();
+</script>
 {% endblock %}
