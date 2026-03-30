@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "heartfl/heartfl/wsgi.py",
+      "use": "@vercel/python",
+      "config": {
+        "maxLambdaSize": "15mb",
+        "runtime": "python3.12"
+      }
+    },
+    {
+      "src": "heartfl/static/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/static/(.*)",
+      "dest": "heartfl/static/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "heartfl/heartfl/wsgi.py"
+    }
+  ]
+}
