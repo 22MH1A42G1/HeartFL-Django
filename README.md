@@ -65,6 +65,47 @@ A comprehensive Django-based web application for heart disease risk prediction u
   <p><em>User interactions and system use cases</em></p>
 </div>
 
+#### Use Case Diagram (Code)
+
+```mermaid
+flowchart LR
+    %% Actors
+    SA[System Admin]
+    HA[Hospital Admin]
+    DR[Doctor]
+
+    %% System boundary
+    subgraph SYS[HeartFL System]
+        UC1((Register Hospital))
+        UC2((Verify Hospital Registration))
+        UC3((Upload CSV Dataset))
+        UC4((Manage Doctors))
+        UC5((Enter Patient Data))
+        UC6((Predict Heart Disease Risk))
+        UC7((Generate PDF Report))
+        UC8((View Prediction History))
+        UC9((Monitor FL Progress))
+        UC10((Manage Users & Permissions))
+    end
+
+    %% Actor to action relationships
+    HA --> UC1
+    SA --> UC2
+    HA --> UC3
+    HA --> UC4
+    DR --> UC5
+    DR --> UC6
+    DR --> UC7
+    DR --> UC8
+    SA --> UC9
+    SA --> UC10
+
+    %% Action dependency
+    UC5 --> UC6
+    UC6 --> UC7
+    UC6 --> UC8
+```
+
 ### Activity Workflow
 
 <div align="center">
