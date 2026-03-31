@@ -69,38 +69,61 @@ A comprehensive Django-based web application for heart disease risk prediction u
 
 ```mermaid
 flowchart LR
+    %% =======================
     %% Actors
+    %% =======================
     SA[System Admin]
     HA[Hospital Admin]
     DR[Doctor]
 
-    %% System boundary
+    %% =======================
+    %% HeartFL System Boundary
+    %% =======================
     subgraph SYS[HeartFL System]
-        UC1((Register Hospital))
-        UC2((Verify Hospital Registration))
-        UC3((Upload CSV Dataset))
-        UC4((Manage Doctors))
-        UC5((Enter Patient Data))
-        UC6((Predict Heart Disease Risk))
-        UC7((Generate PDF Report))
-        UC8((View Prediction History))
-        UC9((Monitor FL Progress))
-        UC10((Manage Users & Permissions))
+
+        %% Admin Functionalities
+        subgraph ADMIN[Administration Module]
+            UC1((Register Hospital))
+            UC2((Verify Hospital))
+            UC3((Upload Dataset (CSV)))
+            UC4((Manage Doctors))
+            UC10((Manage Users & Permissions))
+        end
+
+        %% Doctor Functionalities
+        subgraph DOCTOR[Doctor Module]
+            UC5((Enter Patient Data))
+            UC6((Predict Heart Disease Risk))
+            UC7((Generate PDF Report))
+            UC8((View Prediction History))
+        end
+
+        %% Monitoring
+        subgraph MONITOR[Monitoring Module]
+            UC9((Monitor Federated Learning Progress))
+        end
+
     end
 
-    %% Actor to action relationships
+    %% =======================
+    %% Actor Relationships
+    %% =======================
     HA --> UC1
     SA --> UC2
     HA --> UC3
     HA --> UC4
+    SA --> UC10
+
     DR --> UC5
     DR --> UC6
     DR --> UC7
     DR --> UC8
-    SA --> UC9
-    SA --> UC10
 
-    %% Action dependency
+    SA --> UC9
+
+    %% =======================
+    %% Functional Flow
+    %% =======================
     UC5 --> UC6
     UC6 --> UC7
     UC6 --> UC8
