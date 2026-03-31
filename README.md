@@ -69,28 +69,24 @@ A comprehensive Django-based web application for heart disease risk prediction u
 
 ```mermaid
 flowchart LR
-    %% =======================
     %% Actors
-    %% =======================
     SA[System Admin]
     HA[Hospital Admin]
     DR[Doctor]
 
-    %% =======================
-    %% HeartFL System Boundary
-    %% =======================
+    %% System Boundary
     subgraph SYS[HeartFL System]
 
-        %% Admin Functionalities
+        %% Admin Module
         subgraph ADMIN[Administration Module]
             UC1((Register Hospital))
             UC2((Verify Hospital))
-            UC3((Upload Dataset (CSV)))
+            UC3((Upload Dataset CSV))
             UC4((Manage Doctors))
-            UC10((Manage Users & Permissions))
+            UC10((Manage Users and Permissions))
         end
 
-        %% Doctor Functionalities
+        %% Doctor Module
         subgraph DOCTOR[Doctor Module]
             UC5((Enter Patient Data))
             UC6((Predict Heart Disease Risk))
@@ -98,16 +94,14 @@ flowchart LR
             UC8((View Prediction History))
         end
 
-        %% Monitoring
+        %% Monitoring Module
         subgraph MONITOR[Monitoring Module]
-            UC9((Monitor Federated Learning Progress))
+            UC9((Monitor FL Progress))
         end
 
     end
 
-    %% =======================
-    %% Actor Relationships
-    %% =======================
+    %% Relationships
     HA --> UC1
     SA --> UC2
     HA --> UC3
@@ -121,9 +115,7 @@ flowchart LR
 
     SA --> UC9
 
-    %% =======================
-    %% Functional Flow
-    %% =======================
+    %% Flow
     UC5 --> UC6
     UC6 --> UC7
     UC6 --> UC8
