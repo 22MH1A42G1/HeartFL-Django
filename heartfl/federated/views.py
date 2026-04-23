@@ -9,6 +9,7 @@ from federated.models import FederatedRound, LocalModel
 from prediction.models import PredictionResult
 
 
+@login_required
 def fl_dashboard(request):
     """
     Federated Learning Dashboard

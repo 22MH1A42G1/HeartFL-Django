@@ -44,7 +44,7 @@ class PredictionResultAdmin(admin.ModelAdmin):
     
     def prediction_result(self, obj):
         """Display prediction with color coding"""
-        if obj.prediction == 'Yes':
+        if obj.prediction == 'high':
             return format_html(
                 '<span style="color: red; font-weight: bold; background: #ffe6e6; padding: 5px; border-radius: 3px;">⚠ At Risk</span>'
             )

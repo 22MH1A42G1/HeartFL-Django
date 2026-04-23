@@ -184,7 +184,7 @@
                         <i class="bi bi-robot"></i>
                     </div>
                     <div class="message-content">
-                        <p>Hello! I'm your HeartFL AI Assistant. I can help you with:</p>
+                        <p>Hello! I'm your HeartFL AI Assistant, created by our project developers team. I can help you with:</p>
                         <ul>
                             <li>Understanding heart disease prediction</li>
                             <li>Navigating the website</li>
@@ -192,7 +192,7 @@
                             <li>Reporting technical issues</li>
                             <li>Answering questions about features</li>
                         </ul>
-                        <p>How can I assist you today?</p>
+                        <p>I focus on this application's features. How can I assist you today?</p>
                     </div>
                 </div>
             </div>
@@ -201,13 +201,19 @@
                 <textarea 
                     id="chatbotInput" 
                     class="chatbot-input" 
-                    placeholder="Type your message here..."
+                    placeholder="Type your message here or use voice..."
                     rows="1"
                     aria-label="Chat message input"
                 ></textarea>
+                <button id="chatbotVoice" class="chatbot-voice-btn" aria-label="Voice input">
+                    <i class="bi bi-mic-fill"></i>
+                </button>
                 <button id="chatbotSend" class="chatbot-send-btn" aria-label="Send message">
                     <i class="bi bi-send-fill"></i>
                 </button>
+            </div>
+            <div class="voice-indicator" id="voiceIndicator" style="display:none; text-align:center; padding:8px; font-size:12px; color:#666;">
+                🎤 Listening...
             </div>
         </div>
     </div>
@@ -343,9 +349,8 @@
             if (customColors && customColors[theme]) {
                 const colors = customColors[theme];
                 for (const [key, value] of Object.entries(colors)) {
-                    // Only apply if we have custom colors (not defaults)
                     if (value && typeof value === 'string') {
-                        html.style.setProperty('--custom-' + key, value);
+                        html.style.setProperty('--' + key, value);
                     }
                 }
             }

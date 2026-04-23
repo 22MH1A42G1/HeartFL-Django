@@ -11,7 +11,6 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.shortcuts import redirect, render
@@ -19,7 +18,6 @@ from .forms import HospitalRegistrationForm, DoctorRegistrationForm, ThemeSettin
 from .models import UserProfile, UserThemeSettings
 from hospitals.models import Hospital, Doctor
 from prediction.models import PredictionResult
-from accounts.models import UserProfile
 
 
 logger = logging.getLogger(__name__)
@@ -63,6 +61,30 @@ def _send_sms_otp(phone: str, otp: str) -> bool:
         return False
 
 
+def _find_user_for_contact(contact: str, contact_type: str | None = None):
+    """Resolve a user from an email, username, or phone number."""
+    normalized_contact = contact.strip()
+
+    if contact_type == 'email':
+        user = User.objects.filter(email__iexact=normalized_contact).first()
+        if user:
+            return user
+    elif contact_type == 'phone':
+        profile = UserProfile.objects.filter(phone__iexact=normalized_contact).select_related('user').first()
+        if profile:
+            return profile.user
+
+    user = User.objects.filter(username__iexact=normalized_contact).first()
+    if user:
+        return user
+
+    profile = UserProfile.objects.filter(phone__iexact=normalized_contact).select_related('user').first()
+    if profile:
+        return profile.user
+
+    return None
+
+
 def user_login(request):
     """
     User login with role-based redirect.
@@ -88,24 +110,18 @@ def user_login(request):
                 user_role = 'user'
                 redirect_url = 'accounts:dashboard'
                 
-                # 1. Try to get role from MongoDB UserProfile
-                try:
-                    profile = UserProfile.objects(username=username).first()
-                    if profile and profile.user_type:
-                        user_role = profile.user_type
-                        logger.info('User %s logged in with role: %s (from profile)', username, user_role)
-                except Exception as exc:  # noqa: BLE001
-                    logger.warning('Could not fetch profile for %s: %s', username, exc)
-                    
-                    # 2. Fallback: Detect role from username pattern
-                    if 'doctor' in username.lower():
-                        user_role = 'doctor'
-                        logger.info('User %s detected as doctor (from username)', username)
-                    elif 'hospital' in username.lower():
-                        user_role = 'hospital'
-                        logger.info('User %s detected as hospital (from username)', username)
-                    elif user.is_superuser:
-                        user_role = 'admin'
+                profile = UserProfile.objects.filter(user=user).first()
+                if profile and profile.user_type:
+                    user_role = profile.user_type
+                    logger.info('User %s logged in with role: %s (from profile)', username, user_role)
+                elif 'doctor' in username.lower():
+                    user_role = 'doctor'
+                    logger.info('User %s detected as doctor (from username)', username)
+                elif 'hospital' in username.lower():
+                    user_role = 'hospital'
+                    logger.info('User %s detected as hospital (from username)', username)
+                elif user.is_superuser:
+                    user_role = 'admin'
                 
                 # Set welcome message based on role
                 if user_role == 'doctor':
@@ -293,12 +309,8 @@ def reset_password(request):
         elif new_password.isalpha():
             messages.error(request, 'Password cannot be all letters. Include numbers or symbols.')
         else:
-            # Find user by email or username
-            user = None
-            if contact_type == 'email' and contact:
-                user = User.objects.filter(email=contact).first()
-            if not user and contact:
-                user = User.objects.filter(username=contact).first()
+            # Find user by email, phone, or username
+            user = _find_user_for_contact(contact, contact_type)
 
             if not user:
                 messages.error(request, 'Account not found. Please contact support.')
@@ -497,6 +509,7 @@ def user_settings(request):
         form = ThemeSettingsForm(request.POST, instance=theme_settings)
         if form.is_valid():
             form.save()
+            request.session['force_theme_apply_once'] = True
             messages.success(request, 'Theme settings updated successfully!')
             
             # Get user role for context
@@ -522,6 +535,7 @@ def user_settings(request):
         'active_page': 'settings',
         'form': form,
         'theme_settings': theme_settings,
+        'force_theme_apply_once': request.session.pop('force_theme_apply_once', False),
         'user_role': user_role,
         'role_display': 'Doctor' if user_role == 'doctor' else ('Hospital Admin' if user_role == 'hospital' else 'User'),
     }

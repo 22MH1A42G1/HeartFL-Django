@@ -34,3 +34,14 @@ class DatasetUploadForm(forms.ModelForm):
             'description': 'Dataset Description',
             'num_records': 'Number of Records'
         }
+
+    def clean_dataset_file(self):
+        dataset_file = self.cleaned_data.get('dataset_file')
+        if not dataset_file:
+            return dataset_file
+
+        filename = dataset_file.name.lower()
+        if not filename.endswith('.csv'):
+            raise forms.ValidationError('Please upload a CSV file.')
+
+        return dataset_file

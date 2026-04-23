@@ -66,17 +66,20 @@
                     </a>
                     
                     {% if not message.is_read %}
-                        <a href="{% url 'core:mark_as_read' message.id %}" 
-                           class="btn btn-outline-success">
-                            <i class="bi bi-check2"></i> Mark as Read
-                        </a>
+                        <form method="post" action="{% url 'core:mark_as_read' message.id %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-success">
+                                <i class="bi bi-check2"></i> Mark as Read
+                            </button>
+                        </form>
                     {% endif %}
                     
-                    <a href="{% url 'core:delete_contact_message' message.id %}" 
-                       class="btn btn-outline-danger"
-                       onclick="return confirm('Are you sure you want to delete this message?')">
-                        <i class="bi bi-trash"></i> Delete
-                    </a>
+                    <form method="post" action="{% url 'core:delete_contact_message' message.id %}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this message?')">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-danger">
+                            <i class="bi bi-trash"></i> Delete
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

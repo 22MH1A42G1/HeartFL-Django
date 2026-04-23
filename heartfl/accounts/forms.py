@@ -142,10 +142,9 @@ class DoctorRegistrationForm(UserCreationForm):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Update hospital queryset to include all hospitals (remove is_verified filter for demo)
-        self.fields['hospital'].queryset = Hospital.objects.all()
-        if not Hospital.objects.exists():
-            self.fields['hospital'].help_text = "No hospitals registered yet. Please register a hospital first."
+        self.fields['hospital'].queryset = Hospital.objects.filter(is_verified=True)
+        if not Hospital.objects.filter(is_verified=True).exists():
+            self.fields['hospital'].help_text = "No verified hospitals registered yet. Please register and verify a hospital first."
     
     def save(self, commit=True):
         user = super().save(commit=False)

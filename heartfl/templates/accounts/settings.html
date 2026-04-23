@@ -315,6 +315,24 @@
 <!-- Color Preview Update Script -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    {% if force_theme_apply_once and user.is_authenticated and user_theme_settings %}
+    const preferredTheme = '{{ user_theme_settings.preferred_theme }}';
+    if (preferredTheme === 'auto') {
+        localStorage.removeItem('theme');
+        const systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const autoTheme = systemDark ? 'dark' : 'light';
+        if (typeof setTheme === 'function') {
+            setTheme(autoTheme);
+            localStorage.removeItem('theme');
+        }
+    } else {
+        localStorage.setItem('theme', preferredTheme);
+        if (typeof setTheme === 'function') {
+            setTheme(preferredTheme);
+        }
+    }
+    {% endif %}
+
     // Color input elements
     const lightBgInput = document.querySelector('input[name="light_bg_color"]');
     const lightTextInput = document.querySelector('input[name="light_text_color"]');

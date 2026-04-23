@@ -6,7 +6,7 @@ import json
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods
+from django.views.decorators.http import require_http_methods, require_POST
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 
@@ -236,6 +236,7 @@ def view_contact_message_admin(request, message_id):
 
 @login_required
 @user_passes_test(is_staff_or_superuser)
+@require_POST
 def mark_message_as_read(request, message_id):
     """Mark a contact message as read"""
     try:
@@ -251,6 +252,7 @@ def mark_message_as_read(request, message_id):
 
 @login_required
 @user_passes_test(is_staff_or_superuser)
+@require_POST
 def delete_contact_message(request, message_id):
     """Delete a contact message"""
     try:
